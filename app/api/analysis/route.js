@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
-import connectDB from '@/lib/mongodb';
+import { connectMongoDB } from '@/lib/mongodb';
 import Analysis from '@/models/Analysis';
 
 export async function POST(request) {
@@ -15,7 +15,7 @@ export async function POST(request) {
       }, { status: 401 });
     }
 
-    await connectDB();
+    await connectMongoDB();
     const data = await request.json();
 
     // Ensure the email matches the authenticated user
@@ -75,7 +75,7 @@ export async function GET() {
       }, { status: 401 });
     }
 
-    await connectDB();
+    await connectMongoDB();
     const analyses = await Analysis.find({ email: session.user.email }).sort({ createdAt: -1 });
 
     return NextResponse.json({
