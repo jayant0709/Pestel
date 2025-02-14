@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import {
   Card,
   CardHeader,
@@ -21,7 +22,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const Form = () => {
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
+    email: "",
     business_name: "",
     industry: "",
     geographical_focus: "",
@@ -38,6 +41,15 @@ const Form = () => {
     },
   });
 
+  React.useEffect(() => {
+    if (session?.user?.email) {
+      setFormData((prev) => ({
+        ...prev,
+        email: session.user.email,
+      }));
+    }
+  }, [session]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -47,6 +59,14 @@ const Form = () => {
         political_factors: {
           ...prevData.political_factors,
           [name]: checked,
+        },
+      }));
+    } else if (name === "notes") {
+      setFormData((prevData) => ({
+        ...prevData,
+        political_factors: {
+          ...prevData.political_factors,
+          notes: value,
         },
       }));
     } else {
@@ -64,9 +84,51 @@ const Form = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+    if (!session) {
+      alert("Please sign in to submit analysis");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Analysis submitted successfully!");
+        // Reset form
+        setFormData({
+          email: "",
+          business_name: "",
+          industry: "",
+          geographical_focus: "",
+          target_market: "",
+          competitors: "",
+          time_frame: "Short-term (1-2 years)",
+          political_factors: {
+            government_policies: false,
+            political_stability: false,
+            tax_regulations: false,
+            industry_regulations: false,
+            global_trade_agreements: false,
+            notes: "",
+          },
+        });
+      } else {
+        alert("Error submitting analysis");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting analysis");
+    }
   };
 
   return (
