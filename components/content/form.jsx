@@ -132,23 +132,31 @@ const Form = () => {
   };
 
   return (
-    <Card className="w-full h-full mx-auto">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">
+    <Card className="w-full h-full mx-auto max-w-4xl shadow-lg border-2">
+      <CardHeader className="space-y-1 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-lg">
+        <CardTitle className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
           Business Analysis Form
         </CardTitle>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-8 p-6">
           {/* Basic Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Basic Information</h3>
-            <Separator className="my-2" />
+          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-blue-500 rounded-full"></span>
+              Basic Information
+            </h3>
+            <Separator className="my-3 bg-slate-200" />
 
-            <div className="grid gap-4">
+            <div className="grid gap-6">
               <div className="space-y-2">
-                <Label htmlFor="business_name">Business Name</Label>
+                <Label
+                  htmlFor="business_name"
+                  className="text-slate-700 font-medium"
+                >
+                  Business Name
+                </Label>
                 <Input
                   id="business_name"
                   name="business_name"
@@ -156,12 +164,18 @@ const Form = () => {
                   onChange={handleChange}
                   placeholder="Enter business name"
                   required
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="industry">Industry</Label>
+                  <Label
+                    htmlFor="industry"
+                    className="text-slate-700 font-medium"
+                  >
+                    Industry
+                  </Label>
                   <Input
                     id="industry"
                     name="industry"
@@ -169,11 +183,17 @@ const Form = () => {
                     onChange={handleChange}
                     placeholder="Enter industry"
                     required
+                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="geographical_focus">Geographical Focus</Label>
+                  <Label
+                    htmlFor="geographical_focus"
+                    className="text-slate-700 font-medium"
+                  >
+                    Geographical Focus
+                  </Label>
                   <Input
                     id="geographical_focus"
                     name="geographical_focus"
@@ -181,6 +201,7 @@ const Form = () => {
                     onChange={handleChange}
                     placeholder="Enter geographical focus"
                     required
+                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -188,13 +209,21 @@ const Form = () => {
           </div>
 
           {/* Market Analysis Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Market Analysis</h3>
-            <Separator className="my-2" />
+          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-green-500 rounded-full"></span>
+              Market Analysis
+            </h3>
+            <Separator className="my-3 bg-slate-200" />
 
-            <div className="grid gap-4">
+            <div className="grid gap-6">
               <div className="space-y-2">
-                <Label htmlFor="target_market">Target Market</Label>
+                <Label
+                  htmlFor="target_market"
+                  className="text-slate-700 font-medium"
+                >
+                  Target Market
+                </Label>
                 <Input
                   id="target_market"
                   name="target_market"
@@ -202,28 +231,40 @@ const Form = () => {
                   onChange={handleChange}
                   placeholder="Describe your target market"
                   required
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="competitors">Key Competitors</Label>
+                <Label
+                  htmlFor="competitors"
+                  className="text-slate-700 font-medium"
+                >
+                  Key Competitors
+                </Label>
                 <Input
                   id="competitors"
                   name="competitors"
                   value={formData.competitors}
                   onChange={handleChange}
                   placeholder="List main competitors"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="time_frame">Analysis Time Frame</Label>
+                <Label
+                  htmlFor="time_frame"
+                  className="text-slate-700 font-medium"
+                >
+                  Analysis Time Frame
+                </Label>
                 <Select
                   name="time_frame"
                   value={formData.time_frame}
                   onValueChange={handleSelectChange}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
                     <SelectValue placeholder="Select time frame" />
                   </SelectTrigger>
                   <SelectContent>
@@ -240,15 +281,21 @@ const Form = () => {
           </div>
 
           {/* Political Factors Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Political Factors</h3>
-            <Separator className="my-2" />
+          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-purple-500 rounded-full"></span>
+              Political Factors
+            </h3>
+            <Separator className="my-3 bg-slate-200" />
 
-            <div className="grid gap-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.keys(formData.political_factors).map((key) =>
                   key !== "notes" ? (
-                    <div key={key} className="flex items-center space-x-2">
+                    <div
+                      key={key}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 transition-colors"
+                    >
                       <Checkbox
                         id={key}
                         name={key}
@@ -258,8 +305,12 @@ const Form = () => {
                             target: { name: key, type: "checkbox", checked },
                           });
                         }}
+                        className="data-[state=checked]:bg-blue-500"
                       />
-                      <Label htmlFor={key} className="capitalize">
+                      <Label
+                        htmlFor={key}
+                        className="capitalize text-slate-700"
+                      >
                         {key.replace(/_/g, " ")}
                       </Label>
                     </div>
@@ -268,22 +319,27 @@ const Form = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Additional Notes</Label>
+                <Label htmlFor="notes" className="text-slate-700 font-medium">
+                  Additional Notes
+                </Label>
                 <Textarea
                   id="notes"
                   name="notes"
                   value={formData.political_factors.notes}
                   onChange={handleChange}
                   placeholder="Add any relevant notes or comments"
-                  className="min-h-[100px]"
+                  className="min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
           </div>
         </CardContent>
 
-        <CardFooter>
-          <Button type="submit" className="w-full">
+        <CardFooter className="px-6 pb-6">
+          <Button
+            type="submit"
+            className="w-full py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
             Submit Analysis
           </Button>
         </CardFooter>
