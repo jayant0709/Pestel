@@ -92,6 +92,7 @@ const Form = () => {
     }
 
     try {
+      // Send to Next.js API route
       const response = await fetch("/api/analysis", {
         method: "POST",
         headers: {
@@ -101,6 +102,17 @@ const Form = () => {
       });
 
       const data = await response.json();
+
+      // Send to Flask backend
+      const flaskResponse = await fetch("http://localhost:5000/submit-analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const flaskData = await flaskResponse.json();
 
       if (data.success) {
         alert("Analysis submitted successfully!");
