@@ -7,8 +7,8 @@ export default function UserInfo() {
   const { data: session } = useSession();
 
   return (
-    <div className="grid place-items-center h-screen bg-gray-100">
-      <div className="shadow-lg p-8 bg-white rounded-lg flex flex-col gap-4 my-6 max-w-md w-full">
+    <div className="flex justify-center items-center py-8 bg-gray-100">
+      <div className="shadow-lg p-8 bg-white rounded-lg flex flex-col gap-4 max-w-md w-full">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           User Information
         </h1>
