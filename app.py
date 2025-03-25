@@ -460,5 +460,48 @@ def create_pestel_query(data):
     response = general_llm.invoke(prompt)
     return response.content
 
+@app.route('/chat', methods=['POST'])
+def handle_chat():
+    try:
+        data = request.json
+        user_message = data.get('message')
+        report_context = data.get('reportContext')
+        
+        chat_prompt = """
+        You are a professional AI assistant trained to assist users in understanding their PESTEL analysis report.  
+        You have exclusive access to the full report and will only provide responses based on the given information.  
+
+        ### Guidelines for Response:  
+        - Answer queries strictly within the scope of the report context.  
+        - If a user asks about information not covered in the report, politely inform them that the requested details are unavailable.  
+        - Maintain a professional, concise, and informative tone.
+        - When user says hello greet him and tell him who you are.
+        - Try to provide precise and short to make user feel like a chatbot.  
+
+        ### Report Context:  
+        {report_context}  
+
+        ### User Query:  
+        {user_message}  
+
+        Please provide a precise and well-structured response, focusing on the political analysis aspects covered in the report. Avoid speculation or external information.
+        """
+        
+        formatted_prompt = chat_prompt.format(
+            report_context=report_context,
+            user_message=user_message
+        )
+        
+        response = general_llm.invoke(formatted_prompt)
+        
+        return jsonify({
+            "message": response.content,
+            "success": True
+        })
+
+    except Exception as e:
+        print(f"Chat Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

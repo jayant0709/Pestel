@@ -1,4 +1,5 @@
 import React from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -8,8 +9,42 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ChatWindow from "@/components/chat/ChatWindow";
 
 const Report = ({ reportData, onBack }) => {
+  const { data: session } = useSession();
+  const [hasBeenSaved, setHasBeenSaved] = React.useState(false);
+
+  const saveReport = async () => {
+    if (!session?.user?.email || !reportData?.message || hasBeenSaved) return;
+
+    try {
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: session.user.email,
+          content: reportData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save report");
+      }
+      setHasBeenSaved(true);
+    } catch (error) {
+      console.error("Error saving report:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (reportData?.message && !hasBeenSaved) {
+      saveReport();
+    }
+  }, [reportData?.message]);
+
   const processContent = (content) => {
     if (!content) return [];
 
@@ -160,30 +195,33 @@ const Report = ({ reportData, onBack }) => {
   };
 
   return (
-    <Card className="w-full h-full mx-auto max-w-4xl shadow-lg border-2">
-      <CardHeader className="space-y-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-lg sticky top-0 z-10 p-6">
-        <div className="flex items-center justify-between">
-          <Button 
-            onClick={onBack}
-            className="bg-white hover:bg-slate-100 text-slate-700 border shadow-sm"
-          >
-            ← Back
-          </Button>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-green-500"></div>
-            <span className="text-sm font-medium text-slate-600">Analysis Complete</span>
+    <>
+      <Card className="w-full h-full mx-auto max-w-4xl shadow-lg border-2">
+        <CardHeader className="space-y-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-lg sticky top-0 z-10 p-6">
+          <div className="flex items-center justify-between">
+            <Button 
+              onClick={onBack}
+              className="bg-white hover:bg-slate-100 text-slate-700 border shadow-sm"
+            >
+              ← Back
+            </Button>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              <span className="text-sm font-medium text-slate-600">Analysis Complete</span>
+            </div>
           </div>
-        </div>
-        <CardTitle className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
-          Political Analysis Report
-        </CardTitle>
-        <Separator className="bg-slate-200" />
-      </CardHeader>
+          <CardTitle className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
+            Political Analysis Report
+          </CardTitle>
+          <Separator className="bg-slate-200" />
+        </CardHeader>
 
-      <CardContent className="p-6">
-        {renderContent()}
-      </CardContent>
-    </Card>
+        <CardContent className="p-6">
+          {renderContent()}
+        </CardContent>
+      </Card>
+      <ChatWindow reportData={reportData} />
+    </>
   );
 };
 
