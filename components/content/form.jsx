@@ -20,6 +20,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Report from './Report';
 
 const Form = () => {
   const { data: session } = useSession();
@@ -40,6 +41,9 @@ const Form = () => {
       notes: "",
     },
   });
+  const [showReport, setShowReport] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
     if (session?.user?.email) {
@@ -91,6 +95,8 @@ const Form = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       // Send to Next.js API route
       const response = await fetch("/api/analysis", {
@@ -115,33 +121,22 @@ const Form = () => {
       const flaskData = await flaskResponse.json();
 
       if (data.success) {
-        alert("Analysis submitted successfully!");
-        // Reset form
-        setFormData({
-          email: "",
-          business_name: "",
-          industry: "",
-          geographical_focus: "",
-          target_market: "",
-          competitors: "",
-          time_frame: "Short-term (1-2 years)",
-          political_factors: {
-            government_policies: false,
-            political_stability: false,
-            tax_regulations: false,
-            industry_regulations: false,
-            global_trade_agreements: false,
-            notes: "",
-          },
-        });
+        setReportData(flaskData);
+        setShowReport(true);
       } else {
         alert("Error submitting analysis");
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Error submitting analysis");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (showReport) {
+    return <Report reportData={reportData} onBack={() => setShowReport(false)} />;
+  }
 
   return (
     <Card className="w-full h-full mx-auto max-w-4xl shadow-lg border-2">
@@ -350,9 +345,17 @@ const Form = () => {
         <CardFooter className="px-6 pb-6">
           <Button
             type="submit"
-            className="w-full py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+            disabled={isLoading}
+            className="w-full py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg relative"
           >
-            Submit Analysis
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+                <span className="ml-2">Processing...</span>
+              </div>
+            ) : (
+              "Submit Analysis"
+            )}
           </Button>
         </CardFooter>
       </form>
