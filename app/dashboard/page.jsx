@@ -5,7 +5,8 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/components/content/home";
 import Form from "@/components/content/form";
-import { FaHome, FaInfoCircle, FaEnvelope, FaWpforms } from "react-icons/fa";
+import Report from "@/components/content/sample";
+import { FaHome, FaInfoCircle, FaEnvelope, FaWpforms, FaChartBar } from "react-icons/fa";
 
 const Dashboard = () => {
   const [activeContent, setActiveContent] = useState("home");
@@ -13,6 +14,7 @@ const Dashboard = () => {
   const menuItems = [
     { icon: FaHome, label: "Home", key: "home" },
     { icon: FaWpforms, label: "Form", key: "form" },
+    { icon: FaChartBar, label: "Report", key: "report" },
     { icon: FaInfoCircle, label: "About", key: "about" },
     { icon: FaEnvelope, label: "Contact", key: "contact" },
   ];
@@ -30,6 +32,7 @@ const Dashboard = () => {
           <div className="max-w-6xl mx-auto">
             {activeContent === "home" && <Home />}
             {activeContent === "form" && <Form className="w-full h-full" />}
+            {activeContent === "report" && <Report />}
           </div>
         </main>
       </div>

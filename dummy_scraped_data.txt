@@ -1,20 +1,65 @@
-Title: Error
-Content: Failed to fetch content: CrawlerRunConfig.__init__() got an unexpected keyword argument 'timeout'
+Title: EVision 2025
+Content: Last chance to join, register 56 March 2025, Autoworld Brussels. Learn Save spot voice electricity industry Europe speak 3500 European utilities active power generation distribution supply. Learn Meet team Geopolitics extreme weather raw materials cyber threats putting greater pressure energy system Europe ever. Europe must rethink energy security. Learn Download Grids Speed Energy Security Redefining Energy Security age electricity. Download report Become business member Join leading European Association electricity part journey towards zero carbon world. Discover business hubs Grids speed thorough review investments key enablers required prepare distribution grids electrified society. Download report Power Barometer annual report provides comprehensive analysis electricity energy market trends Europe. Download report Energy Security Redefining Energy Security age electricity. Download report Become business member Join leading European Association electricity part journey towards zero carbon world. Discover business hubs Grids speed thorough review investments key enablers required prepare distribution grids electrified society. Download report Power Barometer annual report provides comprehensive analysis electricity energy market trends Europe. Download report Energy Security Redefining Energy Security age electricity. Download report Become business member Join leading European Association electricity part journey towards zero carbon world. Discover business hubs Grids speed thorough review investments key enablers required prepare distribution grids electrified society. Download report Power Barometer annual report provides comprehensive analysis electricity energy market trends Europe. Download report Previous slide Next slide going See new News 24 February 2025 Lessons learned Ukraine fight light. Detail 21 February 2025 Cybersecurity power sector. News 14 February 2025 Europe needs energy security strategy based clean. News 13 February 2025 Eurelectric 5 yays nays EU Affordable Energy Action Plan next. See events upcoming event 56 March 2025 EVision 2025 Power sector accelerating emobility. EVision 2025 explore future emobility Europe focusing potential support energy grid provide costsaving benefits consumers expert panels discussing key trends developments. Learn Register upcoming event 3 4 June 2025 Power Summit 2025 Eurelectric awardwinning Power Summit serves unparalleled platform engaging discussions wide spectrum critical energyrelated issues including security supply. Summit gathers 600 senior Europe electricity industry.
 
 ==================================================
-Title: Error
-Content: Failed to fetch content: CrawlerRunConfig.__init__() got an unexpected keyword argument 'timeout'
+Title: Government incentives for plugin electric vehicles
+Content: Plugin electric vehicles subject to incentives in various countries include battery electric vehicles, plugin hybrids, and electric vehicle conversions. Government incentives for plugin electric vehicles have been established around the world to support policy-driven adoption. These incentives mainly take the form of purchase rebates, tax exemptions, tax credits, and additional perks such as access to bus lanes, waivers of fees, charging, parking, and tolls. The amount of financial incentives may depend on vehicle battery size and all-electric range. Often, hybrid electric vehicles are included, and some countries extend benefits to fuel cell vehicles and electric vehicle conversions.
+
+Recently, governments have also established long-term regulatory signals with specific target timeframes, such as ZEV mandates and stringent fuel economy standards. For example, Norway has set a national goal for new car sales to be zero-emission vehicles by 2025, and other countries have announced similar targets for their vehicle fleets within the timeframe of 2030 to 2050.
+
+In China, the government has adopted plans to promote electric vehicles, including financial subsidies for electric vehicles and plugin hybrids. The Shanghai Action Plan, released in May 2022, includes tax deductions and financial subsidies for electric vehicles. The Chinese government has also established trial programs to provide incentives for the purchase of new battery electric vehicles and plugin hybrids.
+
+In India, the government announced a subsidy for electric vehicles in 2010, with plans to provide incentives for hybrid electric vehicles as well. The goal is to have seven million electric vehicles on the road by 2020. However, India is regarded as providing the least subsidies compared to major markets for renewable energy and electric vehicles.
+
+Japan introduced its first electric vehicle incentive program in 1996, which provided subsidies and tax discounts for the purchase of electric and hybrid vehicles. The program has been extended and modified over the years to include various incentives for clean energy vehicles.
+
+In Europe, many countries provide tax incentives for electrically chargeable vehicles, and the European Union has implemented directives to promote clean road transport vehicles. Countries like Norway, Germany, and France have established various incentives to encourage the adoption of electric vehicles.
+
+Overall, the landscape of government incentives for plugin electric vehicles is diverse and varies significantly by country, reflecting different policy priorities and market conditions.
 
 ==================================================
-Title: Error
-Content: Failed to fetch content: CrawlerRunConfig.__init__() got an unexpected keyword argument 'timeout'
+Title: Market Monitors
+Content: Market Spotlight European Market Monitor Cars vans January 2025 European market monitor cars vans offers data new registrations estimates manufacturers compliance CO2 emission targets January 2025 25 Feb 2025 Market Spotlight Race Zero European Heavy-Duty Vehicle Market Development Quarterly 2024 Analyzes manufacturers market readiness develop deploy zero-emission trucks buses Europe 11 Feb 2025 Market Spotlight European Market Monitor Cars vans 2024 European market monitor cars vans offers data new registrations charging estimation CO2 emission targets compliance manufacturers 2024 06 Feb 2025 Research Brief Global electric vehicle market monitor light-duty vehicles key markets 2024 H1 Global Market Monitor analyzes development electric vehicle EV market light-duty vehicles LDVs including manufacturer 17 Dec 2024 Market Spotlight Race Zero European Heavy Duty Vehicle Market Development Quarterly January September 2024 Analyzes manufacturers market readiness develop deploy zero-emission trucks buses Europe 11 Dec 2024 Market Spotlight Race Zero Zero-emission bus truck market United States January June 2024 trends first half year continue end year 2024 surpass 2023 total registrations market share zero-emission HDVs 11 Dec 2024 Market Spotlight Zero-emission medium heavy-duty vehicle market China January June 2024 Nearly 78 000 zero-emission heavy-duty vehicles sold China first half 2024 notable growth uptake battery electric fuel-cell electric battery swap-capable vehicles 18 Nov 2024 Market Spotlight Race Zero European Heavy Duty Vehicle Market Development Quarterly January June 2024 Analyzes manufacturers market readiness develop deploy zero-emission trucks buses Europe 26 Sep 2024 Market Spotlight Race zero Zero-emission bus truck market China 2023 Presents overview 2023 market new zero-emission heavy-duty vehicles China 21 Aug 2024 Market Spotlight Race Zero European Heavy Duty Vehicle Market Development Quarterly January March 2024 Analyzes manufacturers market readiness develop deploy zero-emission trucks buses Europe 20 Jun 2024
 
 ==================================================
-Title: Error
-Content: Failed to fetch content: CrawlerRunConfig.__init__() got an unexpected keyword argument 'timeout'
+Title: France Summary
+Content: Population 67 439 599
+Total land area 638 475 km2
+Highway km 14 648 km
+Total Light-Duty Vehicles M1 N1 2023 0
+alternative fuelled vehicles 2023 0
+Data last updated 17 Feb 2025
+
+alternative fuelled light-duty M1 N1 vehicles 2023 0 total fleet
+Vehicles registrations fleet AF Fleet M1 N1
+Total number alternative fuelled BEV PHEV H2 LPG CNG LNG passenger cars M1 vans N1 type
+Electric new registrations M1 N1
+Number newly registered electric BEV PHEV passenger cars M1 vans N1 type
+AF fleet M1 N1
+Total number alternative fuelled BEV PHEV H2 LPG CNG LNG passenger cars M1 vans N1
+Growth rate AF fleet M1 N1
+Year-over-year fleet growth rate alternative fuelled BEV PHEV H2 LPG CNG LNG passenger cars M1 vans N1
+AF fleet N2 N3
+Total number alternative fuelled BEV PHEV H2 LPG CNG LNG heavy duty trucks N2 N3
+Growth rate AF fleet N2 N3
+Year-over-year fleet growth rate alternative fuelled BEV PHEV H2 LPG CNG LNG trucks N2 N3
+popular AF passenger car M1
+Best selling alternative fuelled passenger car M1 type
+Top 10 best sold BEV models
+Infrastructure
+Recharging points
+Total number recharging points based AFIR
+Growth recharging points
+Year-over-year growth recharging points based AFIR
+Refuelling infrastructure
+LPG refuelling station statistics collected since 2022
+Sources revised
+Growth refuelling infrastructure
+LPG refuelling station statistics collected since 2022
+Sources revised
 
 ==================================================
-Title: Error
-Content: Failed to fetch content: CrawlerRunConfig.__init__() got an unexpected keyword argument 'timeout'
+Title: Electric Revolution
+Content: Charging toward greener future consumers continue weigh pros cons hybrid electric vehicles automotive industry need adapt new tools strategies achieve decarbonized future. Customers want better mileage looking miles progress players across automotive industry navigate technology need explore new pathways growth digitally connected world. Deloitte helps companies understand connected electric vehicle trends tools help develop strategies capabilities connect customers get ahead competition. Strategies success mobile doubt US automotive industry path electric mobility future getting likely walk park. Stakeholders across auto ecosystem need unite going maintain momentum road electric mobility. Explore innovations major impact automotive industry year ahead. Securing electric vehicle supply equipment. Cybersecurity strategies hyperconnected ecosystems. Evolving beyond car ownership Today drivers wide variety options go well beyond traditional vehicle ownership vehicles car subscription models. Learn Electric vehicles Setting course 2030 rise sales battery electric plugin hybrid electric cars explore new approach market segmentation seize opportunities manage risks. Driving industry transformation forward Deloitte offers deep industry insights cutting-edge digital capabilities position business future. Explore help face commercial product operations challenges gain competitive advantage. Honda Honors Top Indirect Procurement Suppliers 2024 Business Conference. Vehicles could upend traditional relationship vehicles expected account least 90 new-vehicle market 2029 according new Deloitte report. US Fast EV Charging Station Every 15 Gas Stations. Number public fast-charging stations electric cars US increased 7.6% first quarter bringing total nearly 8,200. Overcoming legacy data constraints unlock potential Gen AI. Smarter vehicles Safer humans believe autonomous vehicle AV technology enable sustainable safe mobile help clients make promise autonomous vehicles reality.
 
 ==================================================
