@@ -110,7 +110,7 @@ const Form = () => {
       const data = await response.json();
 
       // Send to Flask backend
-      const flaskResponse = await fetch("http://localhost:5000/submit-analysis", {
+      const flaskResponse = await fetch("https://app-362387414228.us-central1.run.app/submit-analysis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

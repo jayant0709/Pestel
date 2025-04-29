@@ -38,7 +38,7 @@ const ChatWindow = ({ reportData }) => {
       setMessage('');
 
       // Send to API
-      const response = await fetch('http://localhost:5000/chat', {
+      const response = await fetch('https://app-362387414228.us-central1.run.app/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
