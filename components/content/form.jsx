@@ -20,7 +20,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import Report from "./Report";
+import ReportDisplay from "./ReportDisplay";
 
 const Form = () => {
   const { data: session } = useSession();
@@ -38,8 +38,43 @@ const Form = () => {
       tax_regulations: false,
       industry_regulations: false,
       global_trade_agreements: false,
-      notes: "",
     },
+    economic_factors: {
+      economic_growth: false,
+      interest_rates: false,
+      inflation: false,
+      unemployment: false,
+      labor_costs: false,
+    },
+    social_factors: {
+      demographics: false,
+      education_levels: false,
+      cultural_factors: false,
+      health_consciousness: false,
+      lifestyle_trends: false,
+    },
+    technological_factors: {
+      r_and_d_activity: false,
+      automation: false,
+      technology_incentives: false,
+      rate_of_technological_change: false,
+      technology_adoption: false,
+    },
+    environmental_factors: {
+      weather: false,
+      climate_change: false,
+      environmental_policies: false,
+      carbon_footprint: false,
+      sustainability: false,
+    },
+    legal_factors: {
+      discrimination_laws: false,
+      consumer_protection: false,
+      antitrust_laws: false,
+      employment_laws: false,
+      health_and_safety_regulations: false,
+    },
+    additional_notes: "", // Single additional notes field for all factors
   });
   const [showReport, setShowReport] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -56,21 +91,14 @@ const Form = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const category = e.target.getAttribute("data-category");
 
-    if (type === "checkbox") {
+    if (type === "checkbox" && category) {
       setFormData((prevData) => ({
         ...prevData,
-        political_factors: {
-          ...prevData.political_factors,
+        [category]: {
+          ...prevData[category],
           [name]: checked,
-        },
-      }));
-    } else if (name === "notes") {
-      setFormData((prevData) => ({
-        ...prevData,
-        political_factors: {
-          ...prevData.political_factors,
-          notes: value,
         },
       }));
     } else {
@@ -98,8 +126,8 @@ const Form = () => {
     setIsLoading(true);
 
     try {
-      // Send to Next.js API route
-      const response = await fetch("/api/analysis", {
+      // Only send to local Flask backend
+      const response = await fetch("http://127.0.0.1:8080/submit-analysis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,39 +135,29 @@ const Form = () => {
         body: JSON.stringify(formData),
       });
 
+      if (!response.ok) {
+        throw new Error(`API returned status code ${response.status}`);
+      }
+
       const data = await response.json();
 
-      // Send to Flask backend
-      const flaskResponse = await fetch(
-        "https://app-362387414228.us-central1.run.app/submit-analysis",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const flaskData = await flaskResponse.json();
-
       if (data.success) {
-        setReportData(flaskData);
+        setReportData(data);
         setShowReport(true);
       } else {
-        alert("Error submitting analysis");
+        alert("Error submitting analysis: " + (data.error || "Unknown error"));
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error submitting analysis");
+      alert("Error submitting analysis: " + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (showReport) {
+  if (showReport && reportData) {
     return (
-      <Report reportData={reportData} onBack={() => setShowReport(false)} />
+      <ReportDisplay reportData={reportData} onBack={() => setShowReport(false)} />
     );
   }
 
@@ -302,44 +320,262 @@ const Form = () => {
 
             <div className="grid gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.keys(formData.political_factors).map((key) =>
-                  key !== "notes" ? (
-                    <div
-                      key={key}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors"
-                    >
-                      <Checkbox
-                        id={key}
-                        name={key}
-                        checked={formData.political_factors[key]}
-                        onCheckedChange={(checked) => {
-                          handleChange({
-                            target: { name: key, type: "checkbox", checked },
-                          });
-                        }}
-                        className="data-[state=checked]:bg-indigo-500"
-                      />
-                      <Label htmlFor={key} className="capitalize text-gray-700">
-                        {key.replace(/_/g, " ")}
-                      </Label>
-                    </div>
-                  ) : null
-                )}
+                {Object.keys(formData.political_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`political_${key}`}
+                      name={key}
+                      data-category="political_factors"
+                      checked={formData.political_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "political_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-indigo-500"
+                    />
+                    <Label htmlFor={`political_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
               </div>
+            </div>
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="notes" className="text-gray-700 font-medium">
-                  Additional Notes
-                </Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  value={formData.political_factors.notes}
-                  onChange={handleChange}
-                  placeholder="Add any relevant notes or comments"
-                  className="min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
-                />
+          {/* Economic Factors Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-green-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-green-600 rounded-full"></span>
+              Economic Factors
+            </h3>
+            <Separator className="my-3 bg-green-100" />
+
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(formData.economic_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`economic_${key}`}
+                      name={key}
+                      data-category="economic_factors"
+                      checked={formData.economic_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "economic_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-green-500"
+                    />
+                    <Label htmlFor={`economic_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
               </div>
+            </div>
+          </div>
+
+          {/* Social Factors Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-blue-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-blue-600 rounded-full"></span>
+              Social Factors
+            </h3>
+            <Separator className="my-3 bg-blue-100" />
+
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(formData.social_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`social_${key}`}
+                      name={key}
+                      data-category="social_factors"
+                      checked={formData.social_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "social_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-blue-500"
+                    />
+                    <Label htmlFor={`social_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Technological Factors Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-cyan-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-cyan-600 rounded-full"></span>
+              Technological Factors
+            </h3>
+            <Separator className="my-3 bg-cyan-100" />
+
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(formData.technological_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-cyan-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`technological_${key}`}
+                      name={key}
+                      data-category="technological_factors"
+                      checked={formData.technological_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "technological_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-cyan-500"
+                    />
+                    <Label htmlFor={`technological_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Environmental Factors Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-teal-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-teal-600 rounded-full"></span>
+              Environmental Factors
+            </h3>
+            <Separator className="my-3 bg-teal-100" />
+
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(formData.environmental_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`environmental_${key}`}
+                      name={key}
+                      data-category="environmental_factors"
+                      checked={formData.environmental_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "environmental_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-teal-500"
+                    />
+                    <Label htmlFor={`environmental_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Legal Factors Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-amber-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-amber-600 rounded-full"></span>
+              Legal Factors
+            </h3>
+            <Separator className="my-3 bg-amber-100" />
+
+            <div className="grid gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.keys(formData.legal_factors).map((key) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-amber-50 transition-colors"
+                  >
+                    <Checkbox
+                      id={`legal_${key}`}
+                      name={key}
+                      data-category="legal_factors"
+                      checked={formData.legal_factors[key]}
+                      onCheckedChange={(checked) => {
+                        handleChange({
+                          target: {
+                            name: key,
+                            type: "checkbox",
+                            checked,
+                            getAttribute: () => "legal_factors",
+                          },
+                        });
+                      }}
+                      className="data-[state=checked]:bg-amber-500"
+                    />
+                    <Label htmlFor={`legal_${key}`} className="capitalize text-gray-700">
+                      {key.replace(/_/g, " ")}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Common Additional Notes Section */}
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-purple-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-purple-600 rounded-full"></span>
+              Additional Notes
+            </h3>
+            <Separator className="my-3 bg-purple-100" />
+
+            <div className="space-y-2">
+              <Label htmlFor="additional_notes" className="text-gray-700 font-medium">
+                Provide any additional information, context or specific requirements for the analysis
+              </Label>
+              <Textarea
+                id="additional_notes"
+                name="additional_notes"
+                value={formData.additional_notes}
+                onChange={handleChange}
+                placeholder="Add any relevant notes or comments about your business context, specific risks, opportunities or areas of focus..."
+                className="min-h-[150px] transition-all duration-200 focus:ring-2 focus:ring-purple-500 border-gray-300"
+              />
             </div>
           </div>
         </CardContent>
