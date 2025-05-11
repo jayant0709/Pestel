@@ -20,7 +20,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import Report from './Report';
+import Report from "./Report";
 
 const Form = () => {
   const { data: session } = useSession();
@@ -110,13 +110,16 @@ const Form = () => {
       const data = await response.json();
 
       // Send to Flask backend
-      const flaskResponse = await fetch("https://app-362387414228.us-central1.run.app/submit-analysis", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const flaskResponse = await fetch(
+        "https://app-362387414228.us-central1.run.app/submit-analysis",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const flaskData = await flaskResponse.json();
 
@@ -135,32 +138,34 @@ const Form = () => {
   };
 
   if (showReport) {
-    return <Report reportData={reportData} onBack={() => setShowReport(false)} />;
+    return (
+      <Report reportData={reportData} onBack={() => setShowReport(false)} />
+    );
   }
 
   return (
-    <Card className="w-full h-full mx-auto max-w-4xl shadow-lg border-2">
-      <CardHeader className="space-y-1 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-lg">
-        <CardTitle className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
+    <Card className="w-full h-full mx-auto max-w-4xl shadow-xl border border-gray-200 rounded-2xl overflow-hidden">
+      <CardHeader className="space-y-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-xl py-6">
+        <CardTitle className="text-3xl font-bold text-center">
           Business Analysis Form
         </CardTitle>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-8 p-6">
+        <CardContent className="space-y-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100">
           {/* Basic Information Section */}
-          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-              <span className="h-6 w-1 bg-blue-500 rounded-full"></span>
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-indigo-600 rounded-full"></span>
               Basic Information
             </h3>
-            <Separator className="my-3 bg-slate-200" />
+            <Separator className="my-3 bg-indigo-100" />
 
             <div className="grid gap-6">
               <div className="space-y-2">
                 <Label
                   htmlFor="business_name"
-                  className="text-slate-700 font-medium"
+                  className="text-gray-700 font-medium"
                 >
                   Business Name
                 </Label>
@@ -171,7 +176,7 @@ const Form = () => {
                   onChange={handleChange}
                   placeholder="Enter business name"
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
                 />
               </div>
 
@@ -179,7 +184,7 @@ const Form = () => {
                 <div className="space-y-2">
                   <Label
                     htmlFor="industry"
-                    className="text-slate-700 font-medium"
+                    className="text-gray-700 font-medium"
                   >
                     Industry
                   </Label>
@@ -190,14 +195,14 @@ const Form = () => {
                     onChange={handleChange}
                     placeholder="Enter industry"
                     required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                    className="transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label
                     htmlFor="geographical_focus"
-                    className="text-slate-700 font-medium"
+                    className="text-gray-700 font-medium"
                   >
                     Geographical Focus
                   </Label>
@@ -208,7 +213,7 @@ const Form = () => {
                     onChange={handleChange}
                     placeholder="Enter geographical focus"
                     required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                    className="transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
                   />
                 </div>
               </div>
@@ -216,18 +221,18 @@ const Form = () => {
           </div>
 
           {/* Market Analysis Section */}
-          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-              <span className="h-6 w-1 bg-green-500 rounded-full"></span>
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-purple-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-purple-600 rounded-full"></span>
               Market Analysis
             </h3>
-            <Separator className="my-3 bg-slate-200" />
+            <Separator className="my-3 bg-purple-100" />
 
             <div className="grid gap-6">
               <div className="space-y-2">
                 <Label
                   htmlFor="target_market"
-                  className="text-slate-700 font-medium"
+                  className="text-gray-700 font-medium"
                 >
                   Target Market
                 </Label>
@@ -238,14 +243,14 @@ const Form = () => {
                   onChange={handleChange}
                   placeholder="Describe your target market"
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 border-gray-300"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="competitors"
-                  className="text-slate-700 font-medium"
+                  className="text-gray-700 font-medium"
                 >
                   Key Competitors
                 </Label>
@@ -255,14 +260,14 @@ const Form = () => {
                   value={formData.competitors}
                   onChange={handleChange}
                   placeholder="List main competitors"
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 border-gray-300"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="time_frame"
-                  className="text-slate-700 font-medium"
+                  className="text-gray-700 font-medium"
                 >
                   Analysis Time Frame
                 </Label>
@@ -271,7 +276,7 @@ const Form = () => {
                   value={formData.time_frame}
                   onValueChange={handleSelectChange}
                 >
-                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                  <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-purple-500 border-gray-300">
                     <SelectValue placeholder="Select time frame" />
                   </SelectTrigger>
                   <SelectContent>
@@ -288,12 +293,12 @@ const Form = () => {
           </div>
 
           {/* Political Factors Section */}
-          <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-              <span className="h-6 w-1 bg-purple-500 rounded-full"></span>
+          <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+              <span className="h-6 w-1 bg-indigo-600 rounded-full"></span>
               Political Factors
             </h3>
-            <Separator className="my-3 bg-slate-200" />
+            <Separator className="my-3 bg-indigo-100" />
 
             <div className="grid gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -301,7 +306,7 @@ const Form = () => {
                   key !== "notes" ? (
                     <div
                       key={key}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 transition-colors"
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors"
                     >
                       <Checkbox
                         id={key}
@@ -312,12 +317,9 @@ const Form = () => {
                             target: { name: key, type: "checkbox", checked },
                           });
                         }}
-                        className="data-[state=checked]:bg-blue-500"
+                        className="data-[state=checked]:bg-indigo-500"
                       />
-                      <Label
-                        htmlFor={key}
-                        className="capitalize text-slate-700"
-                      >
+                      <Label htmlFor={key} className="capitalize text-gray-700">
                         {key.replace(/_/g, " ")}
                       </Label>
                     </div>
@@ -326,7 +328,7 @@ const Form = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes" className="text-slate-700 font-medium">
+                <Label htmlFor="notes" className="text-gray-700 font-medium">
                   Additional Notes
                 </Label>
                 <Textarea
@@ -335,18 +337,18 @@ const Form = () => {
                   value={formData.political_factors.notes}
                   onChange={handleChange}
                   placeholder="Add any relevant notes or comments"
-                  className="min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  className="min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
                 />
               </div>
             </div>
           </div>
         </CardContent>
 
-        <CardFooter className="px-6 pb-6">
+        <CardFooter className="px-6 py-6 bg-white border-t border-gray-200">
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full py-6 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg relative"
+            className="w-full py-6 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-500/20 relative text-white font-medium rounded-xl"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">

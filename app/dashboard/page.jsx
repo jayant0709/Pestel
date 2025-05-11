@@ -6,7 +6,13 @@ import Sidebar from "@/components/Sidebar";
 import Home from "@/components/content/home";
 import Form from "@/components/content/form";
 import Report from "@/components/content/sample";
-import { FaHome, FaInfoCircle, FaEnvelope, FaWpforms, FaChartBar } from "react-icons/fa";
+import {
+  FaHome,
+  FaInfoCircle,
+  FaEnvelope,
+  FaWpforms,
+  FaChartBar,
+} from "react-icons/fa";
 
 const Dashboard = () => {
   const [activeContent, setActiveContent] = useState("home");
@@ -20,18 +26,18 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1">
         <Sidebar
           activeContent={activeContent}
           setActiveContent={setActiveContent}
           menuItems={menuItems}
         />
-        <main className="flex-1 p-6 mt-16 ml-64 overflow-auto">
+        <main className="flex-1 p-6 mt-16 ml-64 pb-10 bg-white">
           <div className="max-w-6xl mx-auto">
             {activeContent === "home" && <Home />}
-            {activeContent === "form" && <Form className="w-full h-full" />}
+            {activeContent === "form" && <Form className="w-full" />}
             {activeContent === "report" && <Report />}
           </div>
         </main>

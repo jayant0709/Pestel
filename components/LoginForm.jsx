@@ -34,39 +34,81 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="grid place-items-center h-screen bg-gray-100 w-auto">
-      <div className="shadow-lg p-8 bg-white rounded-lg border-t-4 border-green-500 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Login</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+      <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:shadow-2xl">
+        <div className="bg-green-600 py-4">
+          <h1 className="text-center text-2xl font-bold text-white">
+            Welcome Back
+          </h1>
+          <p className="text-center text-green-100 text-sm mt-1">
+            Sign in to continue to your account
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            placeholder="Email"
-            className="p-2 border border-gray-300 rounded text-black"
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-            className="p-2 border border-gray-300 rounded text-black"
-          />
-          <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2 rounded hover:bg-green-700 transition duration-300">
-            Login
-          </button>
-          {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
-              {error}
+        <div className="px-8 py-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  placeholder="Enter your email"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-black focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 transition-all duration-200"
+                  required
+                />
+              </div>
             </div>
-          )}
 
-          <Link
-            className="text-sm mt-3 text-right text-blue-600 hover:underline"
-            href={"/register"}
-          >
-            Don't have an account? <span className="underline">Register</span>
-          </Link>
-        </form>
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  placeholder="Enter your password"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-black focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded">
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-green-600 py-3 font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Sign In
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <Link
+              className="text-sm text-gray-600 hover:text-green-600 transition-colors"
+              href="/register"
+            >
+              Don't have an account?{" "}
+              <span className="font-medium text-green-600">Register now</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 const Report = () => {
   const [sections, setSections] = useState({
@@ -85,17 +86,17 @@ const Report = () => {
               className="w-4 h-4 fill-current"
             >
               <path 
-                className="text-blue-500" 
+                className="text-indigo-500" 
                 d="M9.4 18L8 16.6l4.6-4.6L8 7.4 9.4 6l6 6z"
               />
               <path 
-                className="text-blue-300" 
+                className="text-purple-400" 
                 d="M14.6 18l-1.4-1.4 4.6-4.6-4.6-4.6L14.6 6l6 6z"
               />
             </svg>
           </div>
         </div>
-        <span className="text-gray-700 font-medium tracking-wide hover:text-blue-600 transition-colors">
+        <span className="text-gray-700 font-medium tracking-wide hover:text-indigo-600 transition-colors">
           {cleanText}
         </span>
       </div>
@@ -118,65 +119,67 @@ const Report = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="container mx-auto p-4 space-y-8">
       {/* Political Analysis Section */}
-      <div>
+      <div className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200">
         <div 
-          className="flex items-center justify-between cursor-pointer mb-8"
+          className="flex items-center justify-between cursor-pointer p-5 bg-gradient-to-r from-indigo-500 to-purple-600"
           onClick={() => toggleSection('political')}
         >
-          <h1 className="text-3xl font-bold text-left text-blue-600">Political Analysis Report</h1>
-          <span className={`transform transition-transform duration-200 text-blue-600 text-2xl ${
+          <h1 className="text-2xl font-bold text-left text-white">Political Analysis Report</h1>
+          <div className={`flex items-center justify-center h-8 w-8 rounded-full bg-white/20 transition-transform duration-300 ${
             sections.political ? 'rotate-180' : ''
-          }`}>▼</span>
+          }`}>
+            <ChevronDown className="w-5 h-5 text-white" />
+          </div>
         </div>
         
-        <div className={`transition-all duration-300 overflow-hidden ${
+        <div className={`transition-all duration-300 overflow-hidden bg-gray-50 ${
           sections.political ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
         }`}>
-          <div className="flex justify-center gap-4 mb-12 pt-2">
+          <div className="flex flex-wrap justify-center gap-4 my-6 p-4">
             {Object.keys(contentData).map((title) => (
               <div
                 key={title}
-                className={`w-48 p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-1 ${
-                  selectedCard === title ? 'ring-2 ring-blue-500' : ''
+                className={`w-48 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-1 ${
+                  selectedCard === title ? 'ring-2 ring-purple-500 shadow-lg' : 'border border-gray-100'
                 }`}
                 onClick={() => handleCardClick(title)}
               >
-                <h3 className="text-lg font-semibold text-center text-blue-700">{title}</h3>
+                <h3 className="text-lg font-semibold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-purple-700">{title}</h3>
               </div>
             ))}
           </div>
 
           {selectedCard && (
-            <div className="mt-8 w-full">
+            <div className="p-4 w-full">
               <div className="grid grid-cols-1 gap-4 w-full">
                 {contentData[selectedCard].map((topic, index) => (
                   <div key={index} className="w-full transition-all duration-200">
                     <div
                       className={`p-5 bg-white rounded-lg shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 ${
                         selectedTopic === topic 
-                          ? 'bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500' 
-                          : 'hover:border-l-4 hover:border-blue-300'
+                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-indigo-500' 
+                          : 'hover:border-l-4 hover:border-purple-300'
                       }`}
                       onClick={() => handleTopicClick(topic)}
                     >
                       <div className="flex justify-between items-center">
                         {renderTopicText(topic)}
-                        <span className={`transform transition-transform duration-200 text-black text-lg font-bold ${
+                        <div className={`flex items-center justify-center h-6 w-6 rounded-full bg-indigo-50 transition-transform duration-300 ${
                           selectedTopic === topic ? 'rotate-180' : ''
                         }`}>
-                          ▼
-                        </span>
+                          <ChevronDown className="w-4 h-4 text-indigo-600" />
+                        </div>
                       </div>
                     </div>
                     
                     {selectedTopic === topic && (
                       <div className="mt-2 mx-4 overflow-hidden transition-all duration-200">
-                        <div className="p-6 bg-white rounded-lg border border-gray-100 shadow-inner">
-                          <div className="prose prose-blue max-w-none">
+                        <div className="p-6 bg-white rounded-lg border border-gray-100 shadow-md">
+                          <div className="prose prose-indigo max-w-none">
                             <div className="space-y-4 text-gray-700">
-                              <h3 className="text-xl font-semibold text-blue-700 border-b pb-2">
+                              <h3 className="text-xl font-semibold text-indigo-700 border-b border-indigo-100 pb-2">
                                 Detailed Analysis
                               </h3>
                               <ul className="list-disc pl-5 space-y-2">
@@ -202,41 +205,85 @@ const Report = () => {
       </div>
 
       {/* Economic Analysis Section */}
-      <div>
+      <div className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200">
         <div 
-          className="flex items-center justify-between cursor-pointer mb-8"
+          className="flex items-center justify-between cursor-pointer p-5 bg-gradient-to-r from-indigo-500 to-purple-600"
           onClick={() => toggleSection('economic')}
         >
-          <h1 className="text-3xl font-bold text-left text-blue-600">Economic Analysis Report</h1>
-          <span className={`transform transition-transform duration-200 text-blue-600 text-2xl ${
+          <h1 className="text-2xl font-bold text-left text-white">Economic Analysis Report</h1>
+          <div className={`flex items-center justify-center h-8 w-8 rounded-full bg-white/20 transition-transform duration-300 ${
             sections.economic ? 'rotate-180' : ''
-          }`}>▼</span>
+          }`}>
+            <ChevronDown className="w-5 h-5 text-white" />
+          </div>
         </div>
         
         <div className={`transition-all duration-300 overflow-hidden ${
           sections.economic ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
         }`}>
-          <div className="text-gray-500 text-center py-8">Economic Analysis content will be added soon...</div>
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                <path d="M12 20V10"></path>
+                <path d="M18 20V4"></path>
+                <path d="M6 20v-6"></path>
+              </svg>
+            </div>
+            <p className="text-lg font-medium text-gray-600">Economic Analysis content will be added soon...</p>
+          </div>
         </div>
       </div>
 
       {/* Add other PESTEL sections with the same structure */}
-      {['Social', 'Technological', 'Environmental', 'Legal'].map(section => (
-        <div key={section.toLowerCase()}>
+      {['Social', 'Technological', 'Environmental', 'Legal'].map((section, index) => (
+        <div key={section.toLowerCase()} className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-200">
           <div 
-            className="flex items-center justify-between cursor-pointer mb-8"
+            className="flex items-center justify-between cursor-pointer p-5 bg-gradient-to-r from-indigo-500 to-purple-600"
             onClick={() => toggleSection(section.toLowerCase())}
           >
-            <h1 className="text-3xl font-bold text-left text-blue-600">{section} Analysis Report</h1>
-            <span className={`transform transition-transform duration-200 text-blue-600 text-2xl ${
+            <h1 className="text-2xl font-bold text-left text-white">{section} Analysis Report</h1>
+            <div className={`flex items-center justify-center h-8 w-8 rounded-full bg-white/20 transition-transform duration-300 ${
               sections[section.toLowerCase()] ? 'rotate-180' : ''
-            }`}>▼</span>
+            }`}>
+              <ChevronDown className="w-5 h-5 text-white" />
+            </div>
           </div>
           
           <div className={`transition-all duration-300 overflow-hidden ${
             sections[section.toLowerCase()] ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
           }`}>
-            <div className="text-gray-500 text-center py-8">{section} Analysis content will be added soon...</div>
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                {index === 0 && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                )}
+                {index === 1 && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                )}
+                {index === 2 && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                )}
+                {index === 3 && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                )}
+              </div>
+              <p className="text-lg font-medium text-gray-600">{section} Analysis content will be added soon...</p>
+            </div>
           </div>
         </div>
       ))}
