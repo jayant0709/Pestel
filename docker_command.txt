@@ -1,0 +1,1 @@
+gcloud run deploy pestel-frontend --image gcr.io/healthcare-586/pestel-frontend:v1 --platform managed --region asia-south1 --allow-unauthenticated --memory 8Gi --cpu 4

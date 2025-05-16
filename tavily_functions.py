@@ -25,11 +25,11 @@ from langgraph.graph.message import add_messages
 openai_api_key = os.environ['OPENAI_API_KEY']
 query_llm = ChatOpenAI(
         model="o4-mini",
-        reasoning_effort="low",
+        reasoning_effort="medium",
         max_tokens=None,
         timeout=None,
         max_retries=2,
-        api_key= os.environ["OPENAI_API_KEY"]
+        api_key= openai_api_key
     )
 
 # LLM for generating the report
@@ -39,7 +39,7 @@ report_llm = ChatOpenAI(
         max_tokens=None,
         timeout=None,
         max_retries=2,
-        api_key= os.environ["OPENAI_API_KEY"]
+        api_key= openai_api_key
     )
 
 # LLM for generating the report
@@ -53,11 +53,13 @@ report_llm = ChatOpenAI(
 #     api_key= os.environ["GROQ_API_KEY"]
 # )
 
-groq_llm = ChatOpenAI(
-    model="gpt-4-turbo",  # Use gpt-4-turbo which has 128k context window
-    temperature=0.3,
-    max_tokens=4000,
-    api_key= os.environ["OPENAI_API_KEY"]
+final_report_llm = ChatOpenAI(
+    model="o4-mini",
+    reasoning_effort="medium",
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    api_key= openai_api_key
 )
 
 # Schema for generated query output
@@ -130,80 +132,9 @@ def tavily_search(queries):
     return results
 
 def summarize_page(result, summarizer_agent, prompt):
-    """
-    Summarize webpage content while handling context length limitations
-    by splitting content into manageable chunks if needed.
-    """
-    content = result['content']
-    # Check if content exceeds a token limit estimate (around 30k chars is ~6-8k tokens)
-    # This is a conservative estimate
-    max_chunk_size = 30000
-    
-    if len(content) > max_chunk_size:
-        print(f"Content too large ({len(content)} chars), splitting into chunks for {result['url']}")
-        
-        # Split into chunks
-        chunks = [content[i:i + max_chunk_size] for i in range(0, len(content), max_chunk_size)]
-        summarized_chunks = []
-        
-        # Process each chunk
-        for i, chunk in enumerate(chunks):
-            chunk_prompt = f"""
-            Extract useful content from this CHUNK {i+1} of {len(chunks)} of a webpage: 
-            
-            Webpage Title: {result.get('title', 'Unknown')}
-            Webpage URL: {result.get('url', 'Unknown')}
-            
-            Chunk Content = {chunk}
-            
-            Remember: 
-            1. Focus on extracting key facts, data points, and important information only.
-            2. Discard boilerplate text, navigation elements, footers, headers, and ads.
-            3. Preserve important numerical data and statistics.
-            4. Be concise but retain all substantive information.
-            5. This is just one part of the page - focus only on the information in this chunk.
-            """
-            
-            try:
-                summary = summarizer_agent.invoke(chunk_prompt)
-                summarized_chunks.append(summary.content)
-            except Exception as e:
-                print(f"Error summarizing chunk {i+1} for {result['url']}: {e}")
-                # If summarization fails, include a shortened version of the raw chunk
-                summarized_chunks.append(chunk[:5000] + "... [content truncated due to processing error]")
-        
-        # Combine summarized chunks
-        combined_summary = "\n\n".join(summarized_chunks)
-        
-        # Final pass to integrate the chunks if needed
-        if len(summarized_chunks) > 1:
-            try:
-                integration_prompt = f"""
-                Integrate these summarized sections from different parts of the same webpage into one coherent summary.
-                Remove any redundancies while preserving all key information:
-                
-                {combined_summary}
-                
-                Provide a unified, well-organized summary of this content.
-                """
-                final_summary = summarizer_agent.invoke(integration_prompt)
-                result['content'] = final_summary.content
-            except Exception as e:
-                print(f"Error in final integration for {result['url']}: {e}")
-                result['content'] = combined_summary
-        else:
-            result['content'] = combined_summary
-    else:
-        # For smaller content, use the original summarization approach
-        formatted_prompt = prompt.format(webpage_content=content)
-        try:
-            summary = summarizer_agent.invoke(formatted_prompt)
-            result['content'] = summary.content
-        except Exception as e:
-            print(f"Error summarizing content for {result['url']}: {e}")
-            # Truncate content if there's an error
-            result['content'] = content[:15000] + "... [content truncated due to processing error]"
-    
+    formatted_prompt = prompt.format(webpage_content=result['content'])
+    summary = summarizer_agent.invoke(formatted_prompt)
+    result['content'] = summary.content
     return result
 
 def summarize_extracted_content(results):
