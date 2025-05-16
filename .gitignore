@@ -48,3 +48,6 @@ venv/
 
 #python
 __pycache__/
+
+#testing
+test/
