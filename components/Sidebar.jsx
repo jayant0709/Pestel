@@ -42,7 +42,7 @@ const Sidebar = ({ activeContent, setActiveContent, menuItems }) => {
                   className={`group relative w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ease-in-out
                     ${
                       isActive
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-purple-500/25"
+                        ? "bg-blue-400 text-white shadow-lg shadow-blue-400/25"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                     }
                   `}
@@ -50,7 +50,7 @@ const Sidebar = ({ activeContent, setActiveContent, menuItems }) => {
                   {isActive && (
                     <motion.div
                       layoutId="activeBackground"
-                      className="absolute inset-0 rounded-xl bg-indigo-500/10"
+                      className="absolute inset-0 rounded-xl bg-blue-400/10"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.3 }}
@@ -62,7 +62,7 @@ const Sidebar = ({ activeContent, setActiveContent, menuItems }) => {
                       className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
                         isActive
                           ? "text-white"
-                          : "text-indigo-500 dark:text-indigo-400"
+                          : "text-blue-400 dark:text-blue-300"
                       }`}
                     />
 

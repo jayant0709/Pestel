@@ -1045,78 +1045,84 @@ def submit_analysis():
         form_data = request.json
         print("Received form data:", form_data)
         
-        if not form_data:
-            return jsonify({
-                'success': False,
-                'error': "No form data received"
-            }), 400
+        # if not form_data:
+        #     return jsonify({
+        #         'success': False,
+        #         'error': "No form data received"
+        #     }), 400
         
-        # Convert boolean values to strings for processing
-        processed_form_data = form_data.copy()
+        # # Convert boolean values to strings for processing
+        # processed_form_data = form_data.copy()
         
-        # Process political factors
-        if "political_factors" in processed_form_data:
-            for key in processed_form_data["political_factors"]:
-                if key != "notes" and isinstance(processed_form_data["political_factors"][key], bool):
-                    processed_form_data["political_factors"][key] = str(processed_form_data["political_factors"][key]).lower()
+        # # Process political factors
+        # if "political_factors" in processed_form_data:
+        #     for key in processed_form_data["political_factors"]:
+        #         if key != "notes" and isinstance(processed_form_data["political_factors"][key], bool):
+        #             processed_form_data["political_factors"][key] = str(processed_form_data["political_factors"][key]).lower()
         
-        # Process other PESTEL factors if they exist
-        factor_categories = ["economic_factors", "social_factors", "technological_factors", 
-                           "environmental_factors", "legal_factors"]
+        # # Process other PESTEL factors if they exist
+        # factor_categories = ["economic_factors", "social_factors", "technological_factors", 
+        #                    "environmental_factors", "legal_factors"]
         
-        for category in factor_categories:
-            if category in processed_form_data:
-                for key in processed_form_data[category]:
-                    if key != "notes" and isinstance(processed_form_data[category][key], bool):
-                        processed_form_data[category][key] = str(processed_form_data[category][key]).lower()
+        # for category in factor_categories:
+        #     if category in processed_form_data:
+        #         for key in processed_form_data[category]:
+        #             if key != "notes" and isinstance(processed_form_data[category][key], bool):
+        #                 processed_form_data[category][key] = str(processed_form_data[category][key]).lower()
         
-        # Additional notes from political factors
-        if "political_factors" in processed_form_data and "notes" in processed_form_data["political_factors"]:
-            processed_form_data["additional_notes"] = processed_form_data["political_factors"]["notes"]
+        # # Additional notes from political factors
+        # if "political_factors" in processed_form_data and "notes" in processed_form_data["political_factors"]:
+        #     processed_form_data["additional_notes"] = processed_form_data["political_factors"]["notes"]
         
-        # Build the PESTEL analysis graph
-        pestel_graph = build_pestel_graph()
+        # # Build the PESTEL analysis graph
+        # pestel_graph = build_pestel_graph()
         
-        # Initialize the state with the form data and empty message queues
-        initial_state = {
-            'messages': [json.dumps(processed_form_data)],
-            'political_messages': [],
-            'economic_messages': [],
-            'social_messages': [],
-            'technological_messages': [],
-            'environmental_messages': [],
-            'legal_messages': [],
-            'political_data': [],
-            'economic_data': [],
-            'social_data': [],
-            'technological_data': [],
-            'environmental_data': [],
-            'legal_data': [],
-            'reports': {},
-            'completed_reports': []
-        }
+        # # Initialize the state with the form data and empty message queues
+        # initial_state = {
+        #     'messages': [json.dumps(processed_form_data)],
+        #     'political_messages': [],
+        #     'economic_messages': [],
+        #     'social_messages': [],
+        #     'technological_messages': [],
+        #     'environmental_messages': [],
+        #     'legal_messages': [],
+        #     'political_data': [],
+        #     'economic_data': [],
+        #     'social_data': [],
+        #     'technological_data': [],
+        #     'environmental_data': [],
+        #     'legal_data': [],
+        #     'reports': {},
+        #     'completed_reports': []
+        # }
         
-        # Run the PESTEL analysis workflow
-        print("Starting PESTEL analysis workflow for submitted form data...")
-        result = pestel_graph.invoke(initial_state)
+        # # Run the PESTEL analysis workflow
+        # print("Starting PESTEL analysis workflow for submitted form data...")
+        # result = pestel_graph.invoke(initial_state)
         
+
+
         # Prepare serializable result
-        serializable_result = make_serializable(result)
+        # serializable_result = make_serializable(result)
+
+        with open("submit_analysis_response.json", 'r') as f:
+            file_content = json.loads(f.read())
+            response_data = file_content
         
         # Save the results to output.json for debugging/record keeping
-        output_filename = f"test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(output_filename, 'w', encoding='utf-8') as f:
-            json.dump(serializable_result, f, indent=4)
+        # output_filename = f"test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        # with open(output_filename, 'w', encoding='utf-8') as f:
+        #     json.dump(serializable_result, f, indent=4)
         
-        print(f"PESTEL analysis complete! Results saved to {output_filename}")
+        # print(f"PESTEL analysis complete! Results saved to {output_filename}")
         
         # Return the final report data to the client
-        response_data = {
-            'success': True,
-            'report': serializable_result.get('reports', {}).get('final_report', ''),
-            'individual_reports': serializable_result.get('reports', {}),
-            'timestamp': datetime.datetime.now().isoformat()
-        }
+        # response_data = {
+        #     'success': True,
+        #     'report': serializable_result.get('reports', {}).get('final_report', ''),
+        #     'individual_reports': serializable_result.get('reports', {}),
+        #     'timestamp': datetime.datetime.now().isoformat()
+        # }
         
         return jsonify(response_data)
         

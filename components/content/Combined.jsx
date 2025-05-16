@@ -467,7 +467,7 @@ const Combined = () => {
 
   const renderSectionHeader = (title, sectionKey) => (
     <div 
-      className="flex items-center justify-between cursor-pointer p-5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-t-xl"
+      className="flex items-center justify-between cursor-pointer p-5 bg-blue-400 rounded-t-xl"
       onClick={() => toggleSection(sectionKey)}
     >
       <h2 className="text-2xl font-bold text-white">{title}</h2>
