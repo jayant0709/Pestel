@@ -239,7 +239,7 @@ const Form = () => {
   return (
     <Card className="w-full h-full mx-auto max-w-4xl shadow-xl border border-gray-200 rounded-2xl overflow-hidden">
       <CardHeader className="space-y-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-xl py-6">
-        <CardTitle className="text-3xl font-bold text-center">
+        <CardTitle className="text-3xl font-bold text-center font-heading">
           Business Analysis Form
         </CardTitle>
       </CardHeader>
@@ -248,7 +248,7 @@ const Form = () => {
         <CardContent className="space-y-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100">
           {/* Basic Information Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-indigo-600 rounded-full"></span>
               Basic Information
             </h3>
@@ -258,7 +258,7 @@ const Form = () => {
               <div className="space-y-2">
                 <Label
                   htmlFor="business_name"
-                  className="text-gray-700 font-medium"
+                  className="text-gray-700 font-medium font-sans"
                 >
                   Business Name
                 </Label>
@@ -269,7 +269,7 @@ const Form = () => {
                   onChange={handleChange}
                   placeholder="Enter business name"
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-indigo-500 border-gray-300 font-sans"
                 />
               </div>
 
@@ -387,7 +387,7 @@ const Form = () => {
 
           {/* Political Factors Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-indigo-600 rounded-full"></span>
               Political Factors
             </h3>
@@ -396,16 +396,13 @@ const Form = () => {
             <div className="grid gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.keys(formData.political_factors).map((key) => (
-                  <div
-                    key={key}
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors"
-                  >
+                  <div key={key} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors">
                     <Checkbox
                       id={`political_${key}`}
                       name={key}
                       data-category="political_factors"
                       checked={formData.political_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -413,14 +410,11 @@ const Form = () => {
                             checked,
                             getAttribute: () => "political_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-indigo-500"
                     />
-                    <Label
-                      htmlFor={`political_${key}`}
-                      className="capitalize text-gray-700"
-                    >
+                    <Label htmlFor={`political_${key}`} className="capitalize text-gray-700">
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -431,7 +425,7 @@ const Form = () => {
 
           {/* Economic Factors Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-green-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-green-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-green-600 rounded-full"></span>
               Economic Factors
             </h3>
@@ -449,7 +443,7 @@ const Form = () => {
                       name={key}
                       data-category="economic_factors"
                       checked={formData.economic_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -457,8 +451,8 @@ const Form = () => {
                             checked,
                             getAttribute: () => "economic_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-green-500"
                     />
                     <Label
@@ -475,7 +469,7 @@ const Form = () => {
 
           {/* Social Factors Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-blue-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-blue-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-blue-600 rounded-full"></span>
               Social Factors
             </h3>
@@ -493,7 +487,7 @@ const Form = () => {
                       name={key}
                       data-category="social_factors"
                       checked={formData.social_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -501,8 +495,8 @@ const Form = () => {
                             checked,
                             getAttribute: () => "social_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-blue-500"
                     />
                     <Label
@@ -519,7 +513,7 @@ const Form = () => {
 
           {/* Technological Factors Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-cyan-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-cyan-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-cyan-600 rounded-full"></span>
               Technological Factors
             </h3>
@@ -537,7 +531,7 @@ const Form = () => {
                       name={key}
                       data-category="technological_factors"
                       checked={formData.technological_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -545,8 +539,8 @@ const Form = () => {
                             checked,
                             getAttribute: () => "technological_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-cyan-500"
                     />
                     <Label
@@ -563,7 +557,7 @@ const Form = () => {
 
           {/* Environmental Factors Section */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-teal-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-teal-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-teal-600 rounded-full"></span>
               Environmental Factors
             </h3>
@@ -581,7 +575,7 @@ const Form = () => {
                       name={key}
                       data-category="environmental_factors"
                       checked={formData.environmental_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -589,8 +583,8 @@ const Form = () => {
                             checked,
                             getAttribute: () => "environmental_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-teal-500"
                     />
                     <Label
@@ -605,9 +599,9 @@ const Form = () => {
             </div>
           </div>
 
-          {/* Legal Factors Section */}
+          {/* Legal Factors Section - THIS IS WHERE THE BUG IS */}
           <div className="space-y-4 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <h3 className="text-xl font-semibold text-amber-800 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-amber-800 flex items-center gap-2 font-heading">
               <span className="h-6 w-1 bg-amber-600 rounded-full"></span>
               Legal Factors
             </h3>
@@ -625,7 +619,7 @@ const Form = () => {
                       name={key}
                       data-category="legal_factors"
                       checked={formData.legal_factors[key]}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={(checked) =>
                         handleChange({
                           target: {
                             name: key,
@@ -633,8 +627,8 @@ const Form = () => {
                             checked,
                             getAttribute: () => "legal_factors",
                           },
-                        });
-                      }}
+                        })
+                      }
                       className="data-[state=checked]:bg-amber-500"
                     />
                     <Label
@@ -681,7 +675,7 @@ const Form = () => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full py-6 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-500/20 relative text-white font-medium rounded-xl"
+            className="w-full py-6 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-500/20 relative text-white font-medium rounded-xl font-heading"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">

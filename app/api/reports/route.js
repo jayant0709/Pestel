@@ -46,14 +46,57 @@ export async function POST(req) {
       );
     }
 
-    // Create the report with the full data structure
+    // Safe handling of nested objects with proper data validation
+    // Convert individual_reports from string to object if needed
+    let sanitizedIndividualReports = {};
+    if (data.individual_reports) {
+      if (typeof data.individual_reports === "string") {
+        try {
+          sanitizedIndividualReports = JSON.parse(data.individual_reports);
+        } catch (e) {
+          console.warn("Failed to parse individual_reports string:", e);
+        }
+      } else if (typeof data.individual_reports === "object") {
+        sanitizedIndividualReports = data.individual_reports;
+      }
+    }
+
+    // Convert final_report from string to object if needed
+    let sanitizedFinalReport = {};
+    if (data.final_report) {
+      if (typeof data.final_report === "string") {
+        try {
+          sanitizedFinalReport = JSON.parse(data.final_report);
+        } catch (e) {
+          console.warn("Failed to parse final_report string:", e);
+        }
+      } else if (typeof data.final_report === "object") {
+        sanitizedFinalReport = data.final_report;
+      }
+    }
+
+    // Convert report from string to object if needed
+    let sanitizedReport = {};
+    if (data.report) {
+      if (typeof data.report === "string") {
+        try {
+          sanitizedReport = JSON.parse(data.report);
+        } catch (e) {
+          console.warn("Failed to parse report string:", e);
+        }
+      } else if (typeof data.report === "object") {
+        sanitizedReport = data.report;
+      }
+    }
+
+    // Create the report with the sanitized data structure
     const report = await Report.create({
       email: session.user.email,
       analysis_id: data.analysis_id,
-      individual_reports: data.individual_reports || {},
-      final_report: data.final_report || {},
-      report: data.report || {},
-      success: data.success || true,
+      individual_reports: sanitizedIndividualReports,
+      final_report: sanitizedFinalReport,
+      report: sanitizedReport,
+      success: data.success !== undefined ? data.success : true,
       timestamp: data.timestamp || new Date(),
     });
 

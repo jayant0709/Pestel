@@ -1,32 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 import {
   ChevronDown,
   ArrowLeft,
   BookOpen,
-  ExternalLink,
-  Plus,
-  Minus,
-  ChevronUp,
   AlertTriangle,
   CheckCircle2,
   Lightbulb,
-  PieChart,
   Target,
   Compass,
-  Globe,
-  BarChart4,
-  FileText,
   Clock,
   Star,
-  Package,
-  BriefcaseBusiness,
-  Building,
-  Car,
-  Users,
-  Sprout,
-  Scale,
-  Smartphone,
+  FileText,
+  Globe,
+  PieChart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +38,15 @@ import {
 // Color schemes for each PESTEL dimension
 const dimensionConfig = {
   Political: {
-    icon: <BriefcaseBusiness className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/political.png"
+        alt="Political"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "blue",
     gradientFrom: "from-blue-600",
     gradientTo: "to-blue-800",
@@ -58,9 +54,18 @@ const dimensionConfig = {
     bgMedium: "bg-blue-100",
     borderColor: "border-blue-200",
     textColor: "text-blue-700",
+    imageSrc: "/political.png",
   },
   Economic: {
-    icon: <BarChart4 className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/economic.png"
+        alt="Economic"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "green",
     gradientFrom: "from-green-600",
     gradientTo: "to-green-800",
@@ -68,9 +73,18 @@ const dimensionConfig = {
     bgMedium: "bg-green-100",
     borderColor: "border-green-200",
     textColor: "text-green-700",
+    imageSrc: "/economic.png",
   },
   Social: {
-    icon: <Users className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/social.png"
+        alt="Social"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "pink",
     gradientFrom: "from-pink-500",
     gradientTo: "to-pink-700",
@@ -78,9 +92,18 @@ const dimensionConfig = {
     bgMedium: "bg-pink-100",
     borderColor: "border-pink-200",
     textColor: "text-pink-700",
+    imageSrc: "/social.png",
   },
   Technological: {
-    icon: <Smartphone className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/technological.png"
+        alt="Technological"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "cyan",
     gradientFrom: "from-cyan-500",
     gradientTo: "to-cyan-700",
@@ -88,9 +111,18 @@ const dimensionConfig = {
     bgMedium: "bg-cyan-100",
     borderColor: "border-cyan-200",
     textColor: "text-cyan-700",
+    imageSrc: "/technological.png",
   },
   Environmental: {
-    icon: <Sprout className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/environmental.png"
+        alt="Environmental"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "teal",
     gradientFrom: "from-teal-500",
     gradientTo: "to-teal-700",
@@ -98,9 +130,18 @@ const dimensionConfig = {
     bgMedium: "bg-teal-100",
     borderColor: "border-teal-200",
     textColor: "text-teal-700",
+    imageSrc: "/environmental.png",
   },
   Legal: {
-    icon: <Scale className="w-6 h-6" />,
+    icon: (
+      <Image
+        src="/legal.png"
+        alt="Legal"
+        width={24}
+        height={24}
+        className="w-6 h-6"
+      />
+    ),
     color: "amber",
     gradientFrom: "from-amber-500",
     gradientTo: "to-amber-700",
@@ -108,6 +149,7 @@ const dimensionConfig = {
     bgMedium: "bg-amber-100",
     borderColor: "border-amber-200",
     textColor: "text-amber-700",
+    imageSrc: "/legal.png",
   },
   Final: {
     icon: <FileText className="w-6 h-6" />,
@@ -191,7 +233,7 @@ const renderMarkdown = (content) => {
       return (
         <h3
           key={i}
-          className="text-xl font-heading font-semibold mt-5 mb-3 text-gray-800"
+          className="text-xl font-heading font-bold mt-6 mb-3 text-gray-800"
         >
           {block.replace("### ", "")}
         </h3>
@@ -200,14 +242,14 @@ const renderMarkdown = (content) => {
       return (
         <h2
           key={i}
-          className="text-2xl font-heading font-bold mt-7 mb-4 text-gray-800"
+          className="text-2xl font-heading font-extrabold mt-8 mb-4 text-gray-800"
         >
           {block.replace("## ", "")}
         </h2>
       );
     if (block.startsWith("- "))
       return (
-        <ul key={i} className="list-disc ml-6 mb-4 space-y-1.5 font-body">
+        <ul key={i} className="list-disc ml-6 mb-5 space-y-2 font-body">
           {block.split("\n").map((li, j) => (
             <li key={j} className="text-gray-700">
               {li.replace("- ", "")}
@@ -217,7 +259,7 @@ const renderMarkdown = (content) => {
       );
     if (block.match(/^\d+\. /))
       return (
-        <ol key={i} className="list-decimal ml-6 mb-4 space-y-1.5 font-body">
+        <ol key={i} className="list-decimal ml-6 mb-5 space-y-2 font-body">
           {block.split("\n").map((li, j) => (
             <li key={j} className="text-gray-700">
               {li.replace(/^\d+\. /, "")}
@@ -226,7 +268,7 @@ const renderMarkdown = (content) => {
         </ol>
       );
     return (
-      <p key={i} className="mb-4 text-gray-700 leading-relaxed font-body">
+      <p key={i} className="mb-5 text-gray-700 leading-relaxed font-body">
         {block}
       </p>
     );
@@ -300,20 +342,26 @@ const ExecutiveSummarySection = ({ data, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          {config.icon}
-          <CardTitle className="font-heading tracking-tight text-xl">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/summary.png"
+            alt="Executive Summary"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
             Executive Summary
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent className={`p-6 ${config.bgLight}`}>
-        {renderMarkdown(data)}
+        <div className="prose prose-lg max-w-none">{renderMarkdown(data)}</div>
       </CardContent>
     </Card>
   );
@@ -329,18 +377,18 @@ const FactorsAnalysisSection = ({ factors, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          <PieChart className="w-6 h-6" />
-          <CardTitle className="font-heading tracking-tight text-xl">
+        <div className="flex items-center gap-3">
+          {config.icon}
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
             Factors Analysis
           </CardTitle>
         </div>
-        <CardDescription className="text-white opacity-90 font-body">
+        <CardDescription className="text-white opacity-95 font-body mt-1">
           Key factors affecting the {dimension.toLowerCase()} dimension
         </CardDescription>
       </CardHeader>
@@ -349,32 +397,32 @@ const FactorsAnalysisSection = ({ factors, dimension }) => {
           {factors.map((factor, index) => (
             <div
               key={index}
-              className={`rounded-xl border ${config.borderColor} overflow-hidden shadow-sm`}
+              className={`rounded-xl border ${config.borderColor} overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200`}
             >
-              <div className={`p-4 ${config.bgMedium}`}>
+              <div className={`p-5 ${config.bgMedium}`}>
                 <h3
                   className={`text-xl font-heading font-bold ${config.textColor}`}
                 >
                   {factor.factor_name || "Unnamed Factor"}
                 </h3>
               </div>
-              <div className="p-4">
-                <div className="text-gray-700 mb-4 leading-relaxed font-body">
+              <div className="p-5">
+                <div className="text-gray-700 mb-5 leading-relaxed font-body">
                   {renderMarkdown(factor.analysis)}
                 </div>
 
                 {factor.key_indicators && factor.key_indicators.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="font-heading font-semibold text-gray-800 mb-2 flex items-center">
+                  <div className="mt-5">
+                    <h4 className="font-heading font-semibold text-gray-800 mb-3 flex items-center">
                       <Target className="w-4 h-4 mr-2" /> Key Indicators
                     </h4>
                     <ul
-                      className={`list-none space-y-2 rounded-lg ${config.bgLight} p-3 font-body`}
+                      className={`list-none space-y-2.5 rounded-lg ${config.bgLight} p-4 font-body`}
                     >
                       {factor.key_indicators.map((indicator, idx) => (
-                        <li key={idx} className="flex items-center gap-2">
+                        <li key={idx} className="flex items-center gap-2.5">
                           <div
-                            className={`h-2 w-2 rounded-full ${config.textColor.replace(
+                            className={`h-2.5 w-2.5 rounded-full ${config.textColor.replace(
                               "text",
                               "bg"
                             )}`}
@@ -407,16 +455,24 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          <Scale className="w-6 h-6" />
-          <CardTitle>Risks & Opportunities</CardTitle>
+        <div className="flex items-center gap-3">
+          <Image
+            src={config.imageSrc}
+            alt={dimension}
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
+            Risks & Opportunities
+          </CardTitle>
         </div>
-        <CardDescription className="text-white opacity-90">
+        <CardDescription className="text-white opacity-95 font-body mt-1">
           Key challenges and potential advantages
         </CardDescription>
       </CardHeader>
@@ -424,9 +480,9 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Risks Column */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2.5 mb-5">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              <h3 className="text-xl font-bold text-red-700">Risks</h3>
+              <h3 className="text-xl font-bold text-red-700 font-heading">Risks</h3>
             </div>
 
             {risks.length > 0 ? (
@@ -437,22 +493,22 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                   return (
                     <Card
                       key={index}
-                      className="border border-red-200 bg-red-50 shadow-sm"
+                      className="border border-red-200 bg-red-50 shadow-sm hover:shadow-md transition-all duration-200"
                     >
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg font-semibold text-gray-800">
+                      <CardHeader className="pb-2 pt-4">
+                        <CardTitle className="text-lg font-semibold text-gray-800 font-heading">
                           {risk.risk_title || "Unnamed Risk"}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0 pb-3">
-                        <p className="text-gray-700 mb-3">{risk.description}</p>
+                      <CardContent className="pt-0 pb-4">
+                        <p className="text-gray-700 mb-3 font-body">{risk.description}</p>
                         {risk.impact_level && (
                           <div className="flex items-center">
-                            <span className="text-sm text-gray-600 mr-2">
+                            <span className="text-sm text-gray-600 mr-2 font-special">
                               Impact:
                             </span>
                             <Badge
-                              className={`${impactConfig.bgColor} ${impactConfig.textColor} border ${impactConfig.borderColor}`}
+                              className={`${impactConfig.bgColor} ${impactConfig.textColor} border ${impactConfig.borderColor} font-semibold`}
                             >
                               {impactConfig.icon} {risk.impact_level}
                             </Badge>
@@ -464,15 +520,15 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 italic">No risks identified.</p>
+              <p className="text-gray-500 italic font-body">No risks identified.</p>
             )}
           </div>
 
           {/* Opportunities Column */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2.5 mb-5">
               <Lightbulb className="w-5 h-5 text-green-600" />
-              <h3 className="text-xl font-bold text-green-700">
+              <h3 className="text-xl font-bold text-green-700 font-heading">
                 Opportunities
               </h3>
             </div>
@@ -487,25 +543,25 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                   return (
                     <Card
                       key={index}
-                      className="border border-green-200 bg-green-50 shadow-sm"
+                      className="border border-green-200 bg-green-50 shadow-sm hover:shadow-md transition-all duration-200"
                     >
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg font-semibold text-gray-800">
+                      <CardHeader className="pb-2 pt-4">
+                        <CardTitle className="text-lg font-semibold text-gray-800 font-heading">
                           {opportunity.opportunity_title ||
                             "Unnamed Opportunity"}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0 pb-3">
-                        <p className="text-gray-700 mb-3">
+                      <CardContent className="pt-0 pb-4">
+                        <p className="text-gray-700 mb-3 font-body">
                           {opportunity.description}
                         </p>
                         {opportunity.potential_benefit && (
                           <div className="flex items-center">
-                            <span className="text-sm text-gray-600 mr-2">
+                            <span className="text-sm text-gray-600 mr-2 font-special">
                               Potential Benefit:
                             </span>
                             <Badge
-                              className={`${benefitConfig.bgColor} ${benefitConfig.textColor} border ${benefitConfig.borderColor}`}
+                              className={`${benefitConfig.bgColor} ${benefitConfig.textColor} border ${benefitConfig.borderColor} font-semibold`}
                             >
                               {benefitConfig.icon}{" "}
                               {opportunity.potential_benefit}
@@ -518,7 +574,7 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 italic">
+              <p className="text-gray-500 italic font-body">
                 No opportunities identified.
               </p>
             )}
@@ -539,16 +595,24 @@ const RegionalDynamicsSection = ({ regions, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          <Globe className="w-6 h-6" />
-          <CardTitle>Regional Dynamics</CardTitle>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/regional_dynamics.png"
+            alt="Regional Dynamics"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
+            Regional Dynamics
+          </CardTitle>
         </div>
-        <CardDescription className="text-white opacity-90">
+        <CardDescription className="text-white opacity-95 font-body mt-1">
           Analysis across different geographic regions
         </CardDescription>
       </CardHeader>
@@ -587,16 +651,24 @@ const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          <Package className="w-6 h-6" />
-          <CardTitle>Scenario Analysis</CardTitle>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/scenario_analysis.png"
+            alt="Scenario Analysis"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
+            Scenario Analysis
+          </CardTitle>
         </div>
-        <CardDescription className="text-white opacity-90">
+        <CardDescription className="text-white opacity-95 font-body mt-1">
           Potential future scenarios and their impacts
         </CardDescription>
       </CardHeader>
@@ -668,16 +740,24 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
 
   return (
     <Card
-      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
     >
       <CardHeader
-        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
       >
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-6 h-6" />
-          <CardTitle>Recommendations</CardTitle>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/recommendation.png"
+            alt="Recommendations"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
+            Recommendations
+          </CardTitle>
         </div>
-        <CardDescription className="text-white opacity-90">
+        <CardDescription className="text-white opacity-95 font-body mt-1">
           Strategic actions to address the {dimension.toLowerCase()} factors
         </CardDescription>
       </CardHeader>
@@ -801,8 +881,8 @@ const StrategicImplicationsSection = ({ implications }) => {
   }
 
   return (
-    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
-      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
+      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6">
         <div className="flex items-center gap-2">
           <Compass className="w-6 h-6" />
           <CardTitle>Strategic Implications</CardTitle>
@@ -864,8 +944,8 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
   }
 
   return (
-    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
-      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
+      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6">
         <div className="flex items-center gap-2">
           <Scale className="w-6 h-6" />
           <CardTitle>Opportunities & Threats Matrix</CardTitle>
@@ -938,28 +1018,65 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
 };
 
 // Main ReportDisplay Component
-const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
+const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = true }) => {
   // Define the font style sheet inside the component
   const fontStyleSheet = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap');
 
     :root {
-      --font-heading: 'Poppins', sans-serif;
-      --font-body: 'Inter', sans-serif;
-      --font-special: 'Montserrat', sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-special: 'Manrope', sans-serif;
     }
 
     h1, h2, h3, h4, h5, h6, .font-heading {
       font-family: var(--font-heading);
       letter-spacing: -0.02em;
+      font-weight: 600;
     }
 
     body, p, ul, ol, li, .font-body {
       font-family: var(--font-body);
+      letter-spacing: -0.01em;
     }
 
     .card-title, .tab-title, .badge-text, .font-special {
       font-family: var(--font-special);
+      font-weight: 600;
+    }
+
+    /* Enhanced typography */
+    h1 {
+      font-weight: 800 !important;
+      letter-spacing: -0.03em !important;
+    }
+
+    h2 {
+      font-weight: 700 !important;
+    }
+    
+    h3 {
+      font-weight: 600 !important;
+    }
+    
+    .badge, button {
+      font-family: var(--font-special) !important;
+      font-weight: 600 !important;
+    }
+    
+    .card-header h3 {
+      font-weight: 700 !important;
+    }
+    
+    /* Enhance card styling */
+    .shadow-card {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    
+    .shadow-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
   `;
 
@@ -1155,7 +1272,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* Introduction */}
         {finalReport.introduction && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6" />
@@ -1170,7 +1287,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* PESTEL Analysis */}
         {finalReport.pestel_analysis && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <PieChart className="w-6 h-6" />
@@ -1251,7 +1368,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* Conclusion */}
         {finalReport.conclusion && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <FileText className="w-6 h-6" />
@@ -1283,7 +1400,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* Introduction */}
         {report.introduction && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6" />
@@ -1298,7 +1415,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* PESTEL Analysis */}
         {report.pestel_analysis && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <PieChart className="w-6 h-6" />
@@ -1379,7 +1496,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
         {/* Conclusion */}
         {report.conclusion && (
-          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
             <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
               <div className="flex items-center gap-2">
                 <FileText className="w-6 h-6" />
@@ -1397,44 +1514,59 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="mb-8">
-        {" "}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-          {" "}
-          <Button
-            onClick={onBack}
-            variant="outline"
-            className="flex items-center gap-2 mb-4 md:mb-0 font-heading text-black"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Return to Form</span>
-          </Button>
-          <div className="flex items-center gap-3">
+      {showReturnButton && (
+        <header className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <Button
-              onClick={() => window.print()}
-              size="sm"
+              onClick={onBack}
               variant="outline"
-              className="flex items-center gap-1 font-body text-black"
+              className="flex items-center gap-2 mb-4 md:mb-0 font-heading text-black hover:bg-gray-100 transition-colors"
             >
-              <ExternalLink className="w-4 h-4" /> Export
+              <ArrowLeft className="w-4 h-4" />
+              <span>Return to Form</span>
             </Button>
           </div>
-        </div>
-        <div className="bg-gradient-to-r from-indigo-800 to-purple-800 rounded-xl shadow-xl p-8 text-white">
-          <h1 className="text-4xl font-heading font-bold mb-3 tracking-tight">
-            PESTEL Analysis Report
-          </h1>
-          <p className="text-lg opacity-90 font-body">
-            Comprehensive market analysis for strategic decision-making
-          </p>
-          <div className="flex items-center gap-2 mt-4">
-            <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
-            <span className="text-sm font-medium font-body">
-              Analysis completed on {new Date().toLocaleDateString()}
-            </span>
+          <div className="bg-gradient-to-r from-indigo-800 to-purple-800 rounded-xl shadow-xl p-8 text-white overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-full bg-white opacity-5 transform rotate-45 translate-x-[-50%] translate-y-[-25%]"></div>
+            <div className="relative z-10">
+              <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-4 tracking-tight leading-tight">
+                PESTEL Analysis Report
+              </h1>
+              <p className="text-lg md:text-xl opacity-95 font-body leading-relaxed">
+                Comprehensive market analysis for strategic decision-making
+              </p>
+              <div className="flex items-center gap-2 mt-5">
+                <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-sm font-medium font-body">
+                  Analysis completed on {new Date().toLocaleDateString()}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
+
+      {!showReturnButton && (
+        <header className="mb-8">
+          <div className="bg-gradient-to-r from-indigo-800 to-purple-800 rounded-xl shadow-xl p-8 text-white overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-full bg-white opacity-5 transform rotate-45 translate-x-[-50%] translate-y-[-25%]"></div>
+            <div className="relative z-10">
+              <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-4 tracking-tight leading-tight">
+                PESTEL Analysis Report
+              </h1>
+              <p className="text-lg md:text-xl opacity-95 font-body leading-relaxed">
+                Comprehensive market analysis for strategic decision-making
+              </p>
+              <div className="flex items-center gap-2 mt-5">
+                <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-sm font-medium font-body">
+                  Analysis completed on {new Date().toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+      )}
 
       <main>
         <Tabs
@@ -1442,15 +1574,21 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <div className="bg-white rounded-lg shadow-md p-1 mb-6 overflow-x-auto">
-            <TabsList className="w-full justify-start">
+          <div className="bg-white rounded-lg shadow-md p-1.5 mb-8 overflow-x-auto border border-gray-100">
+            <TabsList className="w-full justify-start gap-1">
               {/* Unified tab first if it exists */}
               {report && (
                 <TabsTrigger
                   value="Unified"
-                  className="flex items-center gap-1 font-special"
+                  className="flex items-center gap-1.5 font-special font-semibold py-2.5 px-4"
                 >
-                  <PieChart className="w-4 h-4" />
+                  <Image
+                    src="/summary.png"
+                    alt="PESTEL Analysis"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4"
+                  />
                   <span>PESTEL Analysis</span>
                 </TabsTrigger>
               )}
@@ -1466,9 +1604,15 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
                     <TabsTrigger
                       key={key}
                       value={dimension}
-                      className="flex items-center gap-1 font-special"
+                      className="flex items-center gap-1.5 font-special font-semibold py-2.5 px-4"
                     >
-                      {dimConfig.icon}
+                      <Image
+                        src={`/${dimension.toLowerCase()}.png`}
+                        alt={dimension}
+                        width={16}
+                        height={16}
+                        className="w-4 h-4"
+                      />
                       <span>{dimension}</span>
                     </TabsTrigger>
                   );
@@ -1505,7 +1649,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
         {finalReport && !report && renderFinalReport()}
       </main>
 
-      <footer className="text-center text-gray-500 text-sm py-8 font-body">
+      <footer className="text-center text-gray-500 text-sm py-8 font-body mt-12 border-t border-gray-100 pt-8">
         <p>
           © {new Date().getFullYear()} PESTEL Analysis Tool - All rights
           reserved

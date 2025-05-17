@@ -128,20 +128,24 @@ def political_format_query(state: State):
 def political_search(state: State):
     """Perform web search for political factors"""
     queries = json.loads(state['political_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['political_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['political_data']
+
     print("Political web scraping completed!")
     return {'political_data': results}
 
 def political_summarize(state: State):
     """Summarize political search results"""
     results = state['political_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+    
     print("Political results summarized!")
     return {'political_data': summarized_data}
 
@@ -185,13 +189,11 @@ def political_report(state: State):
     
     political_report = report_llm.invoke(prompt)
     # print(political_report)
-    # political_report = "Political Report"
     print("Political Report Generated")
     
     current_reports = state.get('reports', {})
     political_report = json.dumps(make_serializable(political_report))
     current_reports['political_report'] = political_report
-    # current_reports['political_report'] = political_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -258,20 +260,24 @@ def economic_format_query(state: State):
 def economic_search(state: State):
     """Perform web search for economic factors"""
     queries = json.loads(state['economic_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['economic_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['economic_data']
+
     print("Economic web scraping completed!")
     return {'economic_data': results}
 
 def economic_summarize(state: State):
     """Summarize economic search results"""
     results = state['economic_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+
     print("Economic results summarized!")
     return {'economic_data': summarized_data}
 
@@ -315,12 +321,11 @@ def economic_report(state: State):
     
     economic_report = report_llm.invoke(prompt)
     # print(economic_report)
-    # economic_report = "Economic Report"
+
     print("Economic Report Generated")
     
     current_reports = state.get('reports', {})
     current_reports['economic_report'] = json.dumps(make_serializable(economic_report))
-    # current_reports['economic_report'] = economic_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -387,20 +392,24 @@ def social_format_query(state: State):
 def social_search(state: State):
     """Perform web search for social factors"""
     queries = json.loads(state['social_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['social_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['social_data']
+    
     print("Social web scraping completed!")
     return {'social_data': results}
 
 def social_summarize(state: State):
     """Summarize social search results"""
     results = state['social_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+
     print("Social results summarized!")
     return {'social_data': summarized_data}
 
@@ -444,12 +453,10 @@ def social_report(state: State):
     
     social_report = report_llm.invoke(prompt)
     # print(social_report)
-    # social_report = "Social Report"
     print("Social Report Generated")
     
     current_reports = state.get('reports', {})
     current_reports['social_report'] = json.dumps(make_serializable(social_report))
-    # current_reports['social_report'] = social_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -515,20 +522,24 @@ def technological_format_query(state: State):
 def technological_search(state: State):
     """Perform web search for technological factors"""
     queries = json.loads(state['technological_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['technological_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['technological_data']
+
     print("Technological web scraping completed!")
     return {'technological_data': results}
 
 def technological_summarize(state: State):
     """Summarize technological search results"""
     results = state['technological_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+
     print("Technological results summarized!")
     return {'technological_data': summarized_data}
 
@@ -572,12 +583,10 @@ def technological_report(state: State):
     
     technological_report = report_llm.invoke(prompt)
     # print(technological_report)
-    # technological_report = "Technological Report"
     print("Technological Report Generated")
     
     current_reports = state.get('reports', {})
     current_reports['technological_report'] = json.dumps(make_serializable(technological_report))
-    # current_reports['technological_report'] = technological_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -644,20 +653,24 @@ def environmental_format_query(state: State):
 def environmental_search(state: State):
     """Perform web search for environmental factors"""
     queries = json.loads(state['environmental_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['environmental_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['environmental_data']
+
     print("Environmental web scraping completed!")
     return {'environmental_data': results}
 
 def environmental_summarize(state: State):
     """Summarize environmental search results"""
     results = state['environmental_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+
     print("Environmental results summarized!")
     return {'environmental_data': summarized_data}
 
@@ -701,12 +714,10 @@ def environmental_report(state: State):
     
     environmental_report = report_llm.invoke(prompt)
     # print(environmental_report)
-    # environmental_report = "Environmental Report"
     print("Environmental Report Generated")
     
     current_reports = state.get('reports', {})
     current_reports['environmental_report'] = json.dumps(make_serializable(environmental_report))
-    # current_reports['environmental_report'] = environmental_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -773,20 +784,24 @@ def legal_format_query(state: State):
 def legal_search(state: State):
     """Perform web search for legal factors"""
     queries = json.loads(state['legal_messages'][-1].content)
-    # results = tavily_search(queries)
-    with open("final_state.json",'r') as f :
-        file_content = json.loads(f.read())
-        results = file_content['legal_data']
-    # results = ["Result 1", "Result 2", "Result 3"]
+    results = tavily_search(queries)
+
+    ### TESTING ###
+    # with open("final_state.json",'r') as f :
+    #     file_content = json.loads(f.read())
+    #     results = file_content['legal_data']
+
     print("Legal web scraping completed!")
     return {'legal_data': results}
 
 def legal_summarize(state: State):
     """Summarize legal search results"""
     results = state['legal_data']
-    # summarized_data = summarize_extracted_content(results)
-    summarized_data = results
-    # summarized_data = "Summarized Data"
+    summarized_data = summarize_extracted_content(results)
+
+    ### TESTING ###
+    # summarized_data = results
+
     print("Legal results summarized!")
     return {'legal_data': summarized_data}
 
@@ -830,12 +845,10 @@ def legal_report(state: State):
     
     legal_report = report_llm.invoke(prompt)
     # print(legal_report)
-    # legal_report = "Legal Report"
     print("Legal Report Generated")
     
     current_reports = state.get('reports', {})
     current_reports['legal_report'] = json.dumps(make_serializable(legal_report))
-    # current_reports['legal_report'] = legal_report
     
     # Mark this report as completed for synchronization
     current_completed = state.get('completed_reports', [])
@@ -1070,55 +1083,87 @@ def submit_analysis():
         # print("\n\n\n")
         # print(processed_form_data)
         
-        # # Build the PESTEL analysis graph
-        # pestel_graph = build_pestel_graph()
+        # Build the PESTEL analysis graph
+        pestel_graph = build_pestel_graph()
         
-        # # Initialize the state with the form data and empty message queues
-        # initial_state = {
-        #     'messages': [json.dumps(processed_form_data)],
-        #     'political_messages': [],
-        #     'economic_messages': [],
-        #     'social_messages': [],
-        #     'technological_messages': [],
-        #     'environmental_messages': [],
-        #     'legal_messages': [],
-        #     'political_data': [],
-        #     'economic_data': [],
-        #     'social_data': [],
-        #     'technological_data': [],
-        #     'environmental_data': [],
-        #     'legal_data': [],
-        #     'reports': {},
-        #     'completed_reports': []
-        # }
+        # Initialize the state with the form data and empty message queues
+        initial_state = {
+            'messages': [json.dumps(processed_form_data)],
+            'political_messages': [],
+            'economic_messages': [],
+            'social_messages': [],
+            'technological_messages': [],
+            'environmental_messages': [],
+            'legal_messages': [],
+            'political_data': [],
+            'economic_data': [],
+            'social_data': [],
+            'technological_data': [],
+            'environmental_data': [],
+            'legal_data': [],
+            'reports': {},
+            'completed_reports': []
+        }
         
-        # # Run the PESTEL analysis workflow
-        # print("Starting PESTEL analysis workflow for submitted form data...")
-        # result = pestel_graph.invoke(initial_state)
-        
+        # Run the PESTEL analysis workflow
+        print("Starting PESTEL analysis workflow for submitted form data...")
+        result = pestel_graph.invoke(initial_state)
 
-
+        ### TESTING ###
+        # output_filename = "../test/output_20250517_171024.json"
+        # with open(output_filename, 'r', encoding='utf-8') as f:
+        #     result = json.loads(f.read())
+        
         # Prepare serializable result
-        # serializable_result = make_serializable(result)
+        serializable_result = make_serializable(result)
 
-        with open("submit_analysis_response.json", 'r', encoding='utf-8') as f:
-            file_content = json.loads(f.read())
-            response_data = file_content
+        ### TESTING ###
+        # with open("submit_analysis_response.json", 'r', encoding='utf-8') as f:
+        #     file_content = json.loads(f.read())
+        #     response_data = file_content
         
         # Save the results to output.json for debugging/record keeping
-        # output_filename = f"test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        # with open(output_filename, 'w', encoding='utf-8') as f:
-        #     json.dump(serializable_result, f, indent=4)
+        output_filename = f"../test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(output_filename, 'w', encoding='utf-8') as f:
+            json.dump(serializable_result, f, indent=4)
         
-        # print(f"PESTEL analysis complete! Results saved to {output_filename}")
+        # Parse all reports from JSON strings to Python dictionaries
+        parsed_reports = {}
+        reports = serializable_result.get('reports', {})
         
-        # Return the final report data to the client
-        # response_data = {
-        #     'success': True,
-        #     'report': serializable_result.get('reports', {}).get('final_report', ''),
-        #     'individual_reports': serializable_result.get('reports', {}),
-        #     'timestamp': datetime.datetime.now().isoformat()
-        # }
+        # Process individual reports
+        for report_key, report_value in reports.items():
+            if report_key != 'final_report' and report_value:
+                try:
+                    # Parse the JSON string into a Python dictionary
+                    if isinstance(report_value, str):
+                        parsed_reports[report_key] = json.loads(report_value)
+                    else:
+                        parsed_reports[report_key] = report_value
+                except json.JSONDecodeError:
+                    print(f"Error parsing {report_key} as JSON")
+                    parsed_reports[report_key] = report_value
+        
+        # Parse the final report separately
+        final_report = reports.get('final_report', '')
+        if final_report and isinstance(final_report, str):
+            try:
+                parsed_final_report = json.loads(final_report)
+            except json.JSONDecodeError:
+                print("Error parsing final_report as JSON")
+                parsed_final_report = final_report
+        else:
+            parsed_final_report = final_report
+        
+        # Structure the response according to the expected format
+        response_data = {
+            'success': True,
+            'individual_reports': parsed_reports,
+            'report': parsed_final_report,
+            'timestamp': datetime.datetime.now().isoformat()
+        }
+        
+        print(f"PESTEL analysis complete!")
         
         # print(response_data)
 

@@ -262,8 +262,7 @@ const Report = ({ reportData, onBack }) => {
             <SelectContent>
               {savedReports.map((report) => (
                 <SelectItem key={report._id} value={report._id}>
-                  {report.analysis_id?.business_name || "Unnamed Analysis"} -{" "}
-                  {formatDate(report.createdAt)}
+                  {report.analysis_id?.business_name ? report.analysis_id.business_name : "Unnamed Analysis"}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -286,7 +285,7 @@ const Report = ({ reportData, onBack }) => {
         Object.keys(displayData.report || {}).length > 0 ||
         Object.keys(displayData.final_report || {}).length > 0) ? (
         <>
-          <ReportDisplay reportData={displayData} />
+          <ReportDisplay reportData={displayData} showReturnButton={false} />
         </>
       ) : null}
     </div>

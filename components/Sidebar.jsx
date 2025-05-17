@@ -19,7 +19,7 @@ const Sidebar = ({ activeContent, setActiveContent, menuItems }) => {
       <div className="relative h-full overflow-hidden">
         <nav
           ref={navRef}
-          className="h-full overflow-y-auto scrollbar-none p-4 space-y-2.5"
+          className="h-full overflow-y-auto scrollbar-none p-4 space-y-3"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -42,7 +42,7 @@ const Sidebar = ({ activeContent, setActiveContent, menuItems }) => {
                   className={`group relative w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ease-in-out
                     ${
                       isActive
-                        ? "bg-blue-400 text-white shadow-lg shadow-blue-400/25"
+                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-400/25"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                     }
                   `}

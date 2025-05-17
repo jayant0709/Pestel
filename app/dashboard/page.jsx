@@ -7,7 +7,6 @@ import Home from "@/components/content/home";
 import Form from "@/components/content/form";
 // import Report from "@/components/content/sample";
 import Report from "@/components/content/report";
-import Combined from "@/components/content/Combined";
 import {
   FaHome,
   FaInfoCircle,
@@ -41,9 +40,7 @@ const Dashboard = () => {
     { icon: FaHome, label: "Home", key: "home" },
     { icon: FaWpforms, label: "Form", key: "form" },
     { icon: FaChartBar, label: "Report", key: "report" },
-    { icon: FaLayerGroup, label: "Combined", key: "combined" }, // Add this line
-    { icon: FaInfoCircle, label: "About", key: "about" },
-    { icon: FaEnvelope, label: "Contact", key: "contact" },
+    // Removed Combined, About, Contact
   ];
 
   const renderContent = () => {
@@ -54,8 +51,7 @@ const Dashboard = () => {
         return <Form className="w-full" />;
       case "report":
         return <Report />;
-      case "combined":
-        return <Combined />;
+      // Removed Combined, About, Contact
       default:
         return <Home />;
     }
