@@ -34,7 +34,7 @@ report_schema = {
             }
           }
         },
-        "required": ["factor_name", "analysis"]
+        "required": ["factor_name", "analysis", "key_indicators"]
       }
     },
     "risks_opportunities": {
@@ -61,7 +61,7 @@ report_schema = {
                 "enum": ["Low", "Medium", "High", "Critical"]
               }
             },
-            "required": ["risk_title", "description"]
+            "required": ["risk_title", "description", "impact_level"]
           }
         },
         "opportunities": {
@@ -84,7 +84,7 @@ report_schema = {
                 "enum": ["Low", "Medium", "High", "Transformative"]
               }
             },
-            "required": ["opportunity_title", "description"]
+            "required": ["opportunity_title", "description", "potential_benefit"]
           }
         }
       },
@@ -132,7 +132,7 @@ report_schema = {
             "enum": ["Low", "Medium", "High"]
           }
         },
-        "required": ["scenario_name", "drivers", "outcome"]
+        "required": ["scenario_name", "drivers", "outcome", "probability"]
       }
     },
     "recommendations": {
@@ -162,7 +162,7 @@ report_schema = {
             "enum": ["Low", "Medium", "High", "Immediate"]
           }
         },
-        "required": ["recommendation_title", "description"]
+        "required": ["recommendation_title", "description", "implementation_steps", "priority"]
       }
     }
   },
@@ -235,7 +235,7 @@ final_report_schema = {
             }
           }
         },
-        "required": ["implication_title", "analysis"]
+        "required": ["implication_title", "analysis", "affected_dimensions"]
       }
     },
     "opportunities_threats_matrix": {
@@ -302,7 +302,7 @@ final_report_schema = {
             "enum": ["Immediate", "Short-term", "Medium-term", "Long-term"]
           }
         },
-        "required": ["recommendation_number", "recommendation"]
+        "required": ["recommendation_number", "recommendation", "related_dimensions", "implementation_priority"]
       }
     },
     "conclusion": {

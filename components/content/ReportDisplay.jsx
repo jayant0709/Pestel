@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import {
   ChevronDown,
   ArrowLeft,
@@ -6,277 +12,968 @@ import {
   ExternalLink,
   Plus,
   Minus,
+  ChevronUp,
+  AlertTriangle,
+  CheckCircle2,
+  Lightbulb,
+  PieChart,
+  Target,
+  Compass,
+  Globe,
+  BarChart4,
+  FileText,
+  Clock,
+  Star,
+  Package,
+  BriefcaseBusiness,
+  Building,
+  Car,
+  Users,
+  Sprout,
+  Scale,
+  Smartphone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-const sectionColorMap = {
-  Political: "blue",
-  Economic: "green",
-  Social: "pink",
-  Technological: "cyan",
-  Environmental: "teal",
-  Legal: "amber",
+// Color schemes for each PESTEL dimension
+const dimensionConfig = {
+  Political: {
+    icon: <BriefcaseBusiness className="w-6 h-6" />,
+    color: "blue",
+    gradientFrom: "from-blue-600",
+    gradientTo: "to-blue-800",
+    bgLight: "bg-blue-50",
+    bgMedium: "bg-blue-100",
+    borderColor: "border-blue-200",
+    textColor: "text-blue-700",
+  },
+  Economic: {
+    icon: <BarChart4 className="w-6 h-6" />,
+    color: "green",
+    gradientFrom: "from-green-600",
+    gradientTo: "to-green-800",
+    bgLight: "bg-green-50",
+    bgMedium: "bg-green-100",
+    borderColor: "border-green-200",
+    textColor: "text-green-700",
+  },
+  Social: {
+    icon: <Users className="w-6 h-6" />,
+    color: "pink",
+    gradientFrom: "from-pink-500",
+    gradientTo: "to-pink-700",
+    bgLight: "bg-pink-50",
+    bgMedium: "bg-pink-100",
+    borderColor: "border-pink-200",
+    textColor: "text-pink-700",
+  },
+  Technological: {
+    icon: <Smartphone className="w-6 h-6" />,
+    color: "cyan",
+    gradientFrom: "from-cyan-500",
+    gradientTo: "to-cyan-700",
+    bgLight: "bg-cyan-50",
+    bgMedium: "bg-cyan-100",
+    borderColor: "border-cyan-200",
+    textColor: "text-cyan-700",
+  },
+  Environmental: {
+    icon: <Sprout className="w-6 h-6" />,
+    color: "teal",
+    gradientFrom: "from-teal-500",
+    gradientTo: "to-teal-700",
+    bgLight: "bg-teal-50",
+    bgMedium: "bg-teal-100",
+    borderColor: "border-teal-200",
+    textColor: "text-teal-700",
+  },
+  Legal: {
+    icon: <Scale className="w-6 h-6" />,
+    color: "amber",
+    gradientFrom: "from-amber-500",
+    gradientTo: "to-amber-700",
+    bgLight: "bg-amber-50",
+    bgMedium: "bg-amber-100",
+    borderColor: "border-amber-200",
+    textColor: "text-amber-700",
+  },
+  Final: {
+    icon: <FileText className="w-6 h-6" />,
+    color: "indigo",
+    gradientFrom: "from-indigo-500",
+    gradientTo: "to-indigo-700",
+    bgLight: "bg-indigo-50",
+    bgMedium: "bg-indigo-100",
+    borderColor: "border-indigo-200",
+    textColor: "text-indigo-700",
+  }
 };
 
-const getPriorityColor = (priority) => {
-  if (!priority) return "var(--gray-500, #718096)";
+// Priority colors and labels
+const getPriorityConfig = (priority) => {
+  if (!priority) return {
+    color: "gray",
+    bgColor: "bg-gray-100",
+    textColor: "text-gray-700",
+    borderColor: "border-gray-200",
+  };
+  
   const p = priority.toLowerCase();
+  
   if (p.includes("immediate") || p.includes("critical"))
-    return "var(--red-600, #E53E3E)";
+    return {
+      color: "red",
+      bgColor: "bg-red-100",
+      textColor: "text-red-700",
+      borderColor: "border-red-200",
+      icon: <Clock className="w-4 h-4 mr-1" />,
+    };
   if (p === "high" || p === "transformative")
-    return "var(--orange-600, #F59E42)";
-  if (p === "medium") return "var(--amber-600, #D97706)";
-  if (p === "low") return "var(--blue-600, #3182CE)";
-  if (p.includes("long-term")) return "var(--purple-600, #805AD5)";
-  return "var(--gray-600, #4A5568)";
+    return {
+      color: "orange",
+      bgColor: "bg-orange-100",
+      textColor: "text-orange-700",
+      borderColor: "border-orange-200",
+      icon: <Star className="w-4 h-4 mr-1" />,
+    };
+  if (p === "medium")
+    return {
+      color: "amber",
+      bgColor: "bg-amber-100",
+      textColor: "text-amber-700",
+      borderColor: "border-amber-200",
+      icon: <Target className="w-4 h-4 mr-1" />,
+    };
+  if (p === "low")
+    return {
+      color: "blue",
+      bgColor: "bg-blue-100",
+      textColor: "text-blue-700",
+      borderColor: "border-blue-200",
+      icon: <Compass className="w-4 h-4 mr-1" />,
+    };
+  if (p.includes("long-term"))
+    return {
+      color: "purple",
+      bgColor: "bg-purple-100",
+      textColor: "text-purple-700",
+      borderColor: "border-purple-200",
+      icon: <Globe className="w-4 h-4 mr-1" />,
+    };
+  
+  return {
+    color: "gray",
+    bgColor: "bg-gray-100",
+    textColor: "text-gray-700",
+    borderColor: "border-gray-200",
+  };
 };
 
+// Helper: Render text with markdown-like formatting
 const renderMarkdown = (content) => {
   if (!content) return null;
-  // Simple markdown: headers, paragraphs, lists
+  
   return content.split(/\n{2,}/).map((block, i) => {
     if (block.startsWith("### "))
       return (
-        <h3 key={i} className="text-xl font-semibold mt-4 mb-2">
+        <h3 key={i} className="text-xl font-heading font-semibold mt-5 mb-3 text-gray-800">
           {block.replace("### ", "")}
         </h3>
       );
     if (block.startsWith("## "))
       return (
-        <h2 key={i} className="text-2xl font-bold mt-6 mb-3">
+        <h2 key={i} className="text-2xl font-heading font-bold mt-7 mb-4 text-gray-800">
           {block.replace("## ", "")}
         </h2>
       );
     if (block.startsWith("- "))
       return (
-        <ul key={i} className="list-disc ml-6 mb-2">
+        <ul key={i} className="list-disc ml-6 mb-4 space-y-1.5 font-body">
           {block.split("\n").map((li, j) => (
-            <li key={j}>{li.replace("- ", "")}</li>
+            <li key={j} className="text-gray-700">{li.replace("- ", "")}</li>
           ))}
         </ul>
       );
     if (block.match(/^\d+\. /))
       return (
-        <ol key={i} className="list-decimal ml-6 mb-2">
+        <ol key={i} className="list-decimal ml-6 mb-4 space-y-1.5 font-body">
           {block.split("\n").map((li, j) => (
-            <li key={j}>{li.replace(/^\d+\. /, "")}</li>
+            <li key={j} className="text-gray-700">{li.replace(/^\d+\. /, "")}</li>
           ))}
         </ol>
       );
     return (
-      <p key={i} className="mb-2">
+      <p key={i} className="mb-4 text-gray-700 leading-relaxed font-body">
         {block}
       </p>
     );
   });
 };
 
-const Section = ({
-  title,
-  sectionKey,
-  openSections,
-  setOpenSections,
-  children,
-  badgeColor,
-  badgeText,
-}) => (
-  <div className="bg-white rounded-2xl shadow-lg overflow-visible mb-6">
-    <div
-      className="flex items-center justify-between cursor-pointer p-5 bg-gradient-to-r from-gray-900 to-gray-800 rounded-t-xl hover:from-gray-800 hover:to-gray-700"
-      onClick={() =>
-        setOpenSections((prev) => ({
-          ...prev,
-          [sectionKey]: !prev[sectionKey],
-        }))
-      }
-    >
-      <div className="flex items-center gap-3">
-        <h2 className="text-2xl font-bold text-gray-100">{title}</h2>
-        {badgeColor && (
-          <Badge
-            className="text-gray-900"
-            style={{ backgroundColor: `var(--${badgeColor}-100, #E5F4FB)` }}
-          >
-            {badgeText || title}
-          </Badge>
-        )}
-      </div>
-      <div
-        className={`flex items-center justify-center h-8 w-8 rounded-full bg-white/20 transition-transform duration-300 ${
-          openSections[sectionKey] ? "rotate-180" : ""
-        }`}
-      >
-        <ChevronDown className="w-5 h-5 text-gray-100" />
-      </div>
-    </div>
-    <div
-      className={`transition-all duration-500 ease-in-out ${
-        openSections[sectionKey]
-          ? "opacity-100"
-          : "max-h-0 opacity-0 overflow-hidden"
-      }`}
-    >
-      <div className="p-6 bg-gradient-to-b from-white to-gray-50 text-gray-900">
-        {children}
-      </div>
-    </div>
-  </div>
-);
-
+// Helper: Get a clean report object from raw data
 const parseReportData = (rawData) => {
   if (!rawData || typeof rawData !== "object") return {};
-  // If final_report exists, parse it
+  
+  // Create a structured data object to hold all our report data
+  const reportStructure = {
+    finalReport: null,
+    individualReports: {},
+    hasData: false
+  };
+  
+  // Check for final_report
   if (rawData.final_report) {
     try {
-      return JSON.parse(rawData.final_report);
+      reportStructure.finalReport = typeof rawData.final_report === 'object' ? 
+        rawData.final_report : JSON.parse(rawData.final_report);
+      reportStructure.hasData = true;
     } catch (e) {
-      // fallback: already parsed?
-      return rawData.final_report;
+      reportStructure.finalReport = rawData.final_report;
+      reportStructure.hasData = true;
     }
   }
-  // Otherwise, check for individual_reports
-  if (
-    rawData.individual_reports &&
-    typeof rawData.individual_reports === "object"
-  ) {
-    // Find the first non-empty report
-    for (const key of Object.keys(rawData.individual_reports)) {
-      const val = rawData.individual_reports[key];
-      if (typeof val === "string" && val.trim().length > 0) {
+  
+  // Check for individual_reports
+  if (rawData.individual_reports && typeof rawData.individual_reports === "object") {
+    Object.entries(rawData.individual_reports).forEach(([key, value]) => {
+      if (value) {
         try {
-          return JSON.parse(val);
+          reportStructure.individualReports[key] = typeof value === 'object' ? 
+            value : JSON.parse(value);
+          reportStructure.hasData = true;
         } catch (e) {
-          // fallback: already parsed?
-          return val;
+          reportStructure.individualReports[key] = value;
+          reportStructure.hasData = true;
         }
       }
+    });
+  }
+  
+  // Check for unified report
+  if (rawData.report) {
+    try {
+      reportStructure.report = typeof rawData.report === 'object' ? 
+        rawData.report : JSON.parse(rawData.report);
+      reportStructure.hasData = true;
+    } catch (e) {
+      reportStructure.report = rawData.report;
+      reportStructure.hasData = true;
     }
   }
-  // fallback: maybe already parsed
-  return rawData;
+  
+  return reportStructure;
 };
 
-// Helper: PESTEL keys and labels
-const PESTEL_KEYS = [
-  { key: "political_report", label: "Political" },
-  { key: "economic_report", label: "Economic" },
-  { key: "social_report", label: "Social" },
-  { key: "technological_report", label: "Technological" },
-  { key: "environmental_report", label: "Environmental" },
-  { key: "legal_report", label: "Legal" },
-];
-
-const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
-  // Parse the report data if needed
-  const reportData = parseReportData(rawReportData);
-  // Determine if this is a final report (has strategic sections)
-  const isFinal = !!rawReportData.final_report;
-  const pestelSectionKeys = PESTEL_KEYS.map(({ key }) => `pestel_${key}`);
-  const [openSections, setOpenSections] = useState(() => {
-    // Default: all closed except Political open
-    const base = {
-      executive_summary: true,
-      introduction: false,
-      pestel_analysis: false,
-      strategic_implications: false,
-      opportunities_threats_matrix: false,
-      strategic_recommendations: false,
-      conclusion: false,
-      // For single-dimension (legacy)
-      factors_analysis: false,
-      risks_opportunities: false,
-      regional_dynamics: false,
-      scenario_analysis: false,
-      recommendations: false,
-    };
-    pestelSectionKeys.forEach((k, i) => {
-      base[k] = i === 0; // Only first (Political) open by default
-    });
-    return base;
-  });
-
-  const toggleAll = (val) => {
-    setOpenSections((prev) => {
-      const keys = Object.keys(prev);
-      // Also include all PESTEL dropdowns
-      pestelSectionKeys.forEach((k) => {
-        if (!keys.includes(k)) keys.push(k);
-      });
-      return Object.fromEntries(keys.map((k) => [k, val]));
-    });
-  };
-
-  if (!reportData) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-xl w-full">
-          <h2 className="text-xl font-semibold text-red-700 mb-3">
-            No Report Data
-          </h2>
-          <Button
-            onClick={onBack}
-            className="bg-blue-400 hover:bg-blue-500 text-white"
-          >
-            Return to Form
-          </Button>
+// Component for rendering Executive Summary section
+const ExecutiveSummarySection = ({ data, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          {config.icon}
+          <CardTitle className="font-heading tracking-tight text-xl">Executive Summary</CardTitle>
         </div>
+      </CardHeader>
+      <CardContent className={`p-6 ${config.bgLight}`}>
+        {renderMarkdown(data)}
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for rendering Factors Analysis
+const FactorsAnalysisSection = ({ factors, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  if (!factors || !Array.isArray(factors) || factors.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          <PieChart className="w-6 h-6" />
+          <CardTitle className="font-heading tracking-tight text-xl">Factors Analysis</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90 font-body">
+          Key factors affecting the {dimension.toLowerCase()} dimension
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 gap-6">
+          {factors.map((factor, index) => (
+            <div 
+              key={index} 
+              className={`rounded-xl border ${config.borderColor} overflow-hidden shadow-sm`}
+            >
+              <div className={`p-4 ${config.bgMedium}`}>
+                <h3 className={`text-xl font-heading font-bold ${config.textColor}`}>
+                  {factor.factor_name || "Unnamed Factor"}
+                </h3>
+              </div>
+              <div className="p-4">
+                <div className="text-gray-700 mb-4 leading-relaxed font-body">
+                  {renderMarkdown(factor.analysis)}
+                </div>
+                
+                {factor.key_indicators && factor.key_indicators.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-heading font-semibold text-gray-800 mb-2 flex items-center">
+                      <Target className="w-4 h-4 mr-2" /> Key Indicators
+                    </h4>
+                    <ul className={`list-none space-y-2 rounded-lg ${config.bgLight} p-3 font-body`}>
+                      {factor.key_indicators.map((indicator, idx) => (
+                        <li key={idx} className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${config.textColor.replace('text', 'bg')}`}></div>
+                          <span className="text-gray-700">{indicator}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Risks & Opportunities
+const RisksOpportunitiesSection = ({ data, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  if (!data || (!data.risks && !data.opportunities)) {
+    return null;
+  }
+  
+  const risks = data.risks || [];
+  const opportunities = data.opportunities || [];
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          <Scale className="w-6 h-6" />
+          <CardTitle>Risks & Opportunities</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Key challenges and potential advantages
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Risks Column */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <h3 className="text-xl font-bold text-red-700">Risks</h3>
+            </div>
+            
+            {risks.length > 0 ? (
+              <div className="space-y-4">
+                {risks.map((risk, index) => {
+                  const impactConfig = getPriorityConfig(risk.impact_level);
+                  
+                  return (
+                    <Card key={index} className="border border-red-200 bg-red-50 shadow-sm">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg font-semibold text-gray-800">
+                          {risk.risk_title || "Unnamed Risk"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 pb-3">
+                        <p className="text-gray-700 mb-3">{risk.description}</p>
+                        {risk.impact_level && (
+                          <div className="flex items-center">
+                            <span className="text-sm text-gray-600 mr-2">Impact:</span>
+                            <Badge className={`${impactConfig.bgColor} ${impactConfig.textColor} border ${impactConfig.borderColor}`}>
+                              {impactConfig.icon} {risk.impact_level}
+                            </Badge>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No risks identified.</p>
+            )}
+          </div>
+          
+          {/* Opportunities Column */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Lightbulb className="w-5 h-5 text-green-600" />
+              <h3 className="text-xl font-bold text-green-700">Opportunities</h3>
+            </div>
+            
+            {opportunities.length > 0 ? (
+              <div className="space-y-4">
+                {opportunities.map((opportunity, index) => {
+                  const benefitConfig = getPriorityConfig(opportunity.potential_benefit);
+                  
+                  return (
+                    <Card key={index} className="border border-green-200 bg-green-50 shadow-sm">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg font-semibold text-gray-800">
+                          {opportunity.opportunity_title || "Unnamed Opportunity"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 pb-3">
+                        <p className="text-gray-700 mb-3">{opportunity.description}</p>
+                        {opportunity.potential_benefit && (
+                          <div className="flex items-center">
+                            <span className="text-sm text-gray-600 mr-2">Potential Benefit:</span>
+                            <Badge className={`${benefitConfig.bgColor} ${benefitConfig.textColor} border ${benefitConfig.borderColor}`}>
+                              {benefitConfig.icon} {opportunity.potential_benefit}
+                            </Badge>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No opportunities identified.</p>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Regional Dynamics
+const RegionalDynamicsSection = ({ regions, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  if (!regions || !Array.isArray(regions) || regions.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          <Globe className="w-6 h-6" />
+          <CardTitle>Regional Dynamics</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Analysis across different geographic regions
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {regions.map((region, index) => (
+            <Card key={index} className={`border ${config.borderColor} shadow-sm`}>
+              <CardHeader className={`${config.bgLight} pb-3`}>
+                <CardTitle className={`text-lg font-semibold ${config.textColor}`}>
+                  {region.region}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-3">
+                <p className="text-gray-700">
+                  {region.analysis}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Scenario Analysis
+const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          <Package className="w-6 h-6" />
+          <CardTitle>Scenario Analysis</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Potential future scenarios and their impacts
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {scenarios.map((scenario, index) => {
+            const probabilityConfig = getPriorityConfig(scenario.probability);
+            
+            return (
+              <Card key={index} className="border border-purple-200 bg-purple-50 shadow-sm">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-semibold text-gray-800">
+                    {scenario.scenario_name || "Unnamed Scenario"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 pb-3">
+                  <div className="space-y-2">
+                    <div>
+                      <span className="font-semibold text-gray-800">Drivers:</span>
+                      <p className="text-gray-700">{scenario.drivers}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="font-semibold text-gray-800">Outcome:</span>
+                      <p className="text-gray-700">{scenario.outcome}</p>
+                    </div>
+                    
+                    {scenario.probability && (
+                      <div className="flex items-center mt-2">
+                        <span className="text-sm text-gray-600 mr-2">Probability:</span>
+                        <Badge className={`${probabilityConfig.bgColor} ${probabilityConfig.textColor} border ${probabilityConfig.borderColor}`}>
+                          {probabilityConfig.icon} {scenario.probability}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Recommendations
+const RecommendationsSection = ({ recommendations, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+  
+  if (!recommendations || !Array.isArray(recommendations) || recommendations.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
+      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="w-6 h-6" />
+          <CardTitle>Recommendations</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Strategic actions to address the {dimension.toLowerCase()} factors
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          {recommendations.map((recommendation, index) => {
+            const priorityConfig = getPriorityConfig(
+              recommendation.priority || recommendation.implementation_priority
+            );
+            const title = recommendation.recommendation_title || recommendation.recommendation || "Unnamed Recommendation";
+            
+            return (
+              <Card key={index} className={`border ${config.borderColor} shadow-md hover:shadow-lg transition-shadow duration-200`}>
+                <CardHeader className={`${config.bgLight} pb-3`}>
+                  <div className="flex items-center gap-3">
+                    {recommendation.recommendation_number && (
+                      <div className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}>
+                        {recommendation.recommendation_number}
+                      </div>
+                    )}
+                    <CardTitle className="text-lg">{title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  {/* Description */}
+                  {(recommendation.description || recommendation.recommendation) && (
+                    <div className="mb-4">
+                      <p className="text-gray-700">{recommendation.description || recommendation.recommendation}</p>
+                    </div>
+                  )}
+                  
+                  {/* Implementation Steps */}
+                  {recommendation.implementation_steps && recommendation.implementation_steps.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-heading font-semibold text-gray-800 mb-2">Implementation Steps</h4>
+                      <ol className="list-decimal ml-5 space-y-1">
+                        {recommendation.implementation_steps.map((step, idx) => (
+                          <li key={idx} className="text-gray-700">{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                  
+                  {/* Related Dimensions */}
+                  {recommendation.related_dimensions && recommendation.related_dimensions.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-heading font-semibold text-gray-800 mb-2">Related Dimensions</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {recommendation.related_dimensions.map((dim, idx) => {
+                          const dimConfig = dimensionConfig[dim] || dimensionConfig.Final;
+                          return (
+                            <Badge 
+                              key={idx} 
+                              className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
+                            >
+                              {dim}
+                            </Badge>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Priority */}
+                  {(recommendation.priority || recommendation.implementation_priority) && (
+                    <div className="flex items-center">
+                      <span className="text-sm text-gray-600 mr-2">Priority:</span>
+                      <Badge className={`${priorityConfig.bgColor} ${priorityConfig.textColor} border ${priorityConfig.borderColor}`}>
+                        {priorityConfig.icon} {recommendation.priority || recommendation.implementation_priority}
+                      </Badge>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Strategic Implications
+const StrategicImplicationsSection = ({ implications }) => {
+  if (!implications || !Array.isArray(implications) || implications.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+        <div className="flex items-center gap-2">
+          <Compass className="w-6 h-6" />
+          <CardTitle>Strategic Implications</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Cross-dimensional strategic analysis
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="space-y-6">
+          {implications.map((implication, index) => (
+            <Card key={index} className="border border-indigo-200 shadow-sm bg-indigo-50">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-semibold text-gray-800">
+                  {implication.implication_title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 pb-3">
+                <p className="text-gray-700 mb-3">{implication.analysis}</p>
+                
+                {implication.affected_dimensions && implication.affected_dimensions.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {implication.affected_dimensions.map((dim, idx) => {
+                      const dimConfig = dimensionConfig[dim] || dimensionConfig.Final;
+                      return (
+                        <Badge 
+                          key={idx} 
+                          className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
+                        >
+                          {dim}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Component for Opportunities & Threats Matrix
+const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
+  if (!matrix || !matrix.dimensions || !Array.isArray(matrix.dimensions) || matrix.dimensions.length === 0) {
+    return null;
+  }
+  
+  return (
+    <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+      <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+        <div className="flex items-center gap-2">
+          <Scale className="w-6 h-6" />
+          <CardTitle>Opportunities & Threats Matrix</CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-90">
+          Comprehensive view of challenges and potential advantages
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Dimension</th>
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-green-700">Opportunities</th>
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-red-700">Threats</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matrix.dimensions.map((dim, index) => {
+                const dimConfig = dimensionConfig[dim.dimension] || dimensionConfig.Final;
+                
+                return (
+                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className={`border border-gray-300 px-4 py-3 ${dimConfig.textColor} font-medium`}>
+                      <div className="flex items-center gap-2">
+                        {dimConfig.icon}
+                        {dim.dimension}
+                      </div>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-3">
+                      <ul className="list-disc ml-5 space-y-1">
+                        {dim.opportunities.map((item, idx) => (
+                          <li key={idx} className="text-gray-700">{item}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="border border-gray-300 px-4 py-3">
+                      <ul className="list-disc ml-5 space-y-1">
+                        {dim.threats.map((item, idx) => (
+                          <li key={idx} className="text-gray-700">{item}</li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Main ReportDisplay Component
+const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
+  // Define the font style sheet inside the component
+  const fontStyleSheet = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap');
+
+    :root {
+      --font-heading: 'Poppins', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-special: 'Montserrat', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: var(--font-heading);
+      letter-spacing: -0.02em;
+    }
+
+    body, p, ul, ol, li, .font-body {
+      font-family: var(--font-body);
+    }
+
+    .card-title, .tab-title, .badge-text, .font-special {
+      font-family: var(--font-special);
+    }
+  `;
+
+  // Parse the report data
+  const { finalReport, individualReports, report, hasData } = parseReportData(rawReportData);
+  
+  // Define PESTEL order for proper sequence
+  const pestelOrder = ["Political", "Economic", "Social", "Technological", "Environmental", "Legal"];
+  
+  // Get dimension keys for tabs - exclude Final and sort by PESTEL order
+  const dimensionKeys = Object.keys(dimensionConfig)
+    .filter(key => 
+      key !== 'Final' && 
+      individualReports[`${key.toLowerCase()}_report`]
+    )
+    .sort((a, b) => {
+      const indexA = pestelOrder.indexOf(a);
+      const indexB = pestelOrder.indexOf(b);
+      return indexA - indexB; // Sort according to PESTEL sequence
+    });
+  
+  // Add Unified to dimension keys if report exists
+  if (report) {
+    dimensionKeys.unshift("Unified");
+  }
+  
+  const [activeTab, setActiveTab] = useState(dimensionKeys[0] || "Unified");
+  const [openSections, setOpenSections] = useState({});
+  
+  // Move the useEffect inside the component
+  useEffect(() => {
+    // Check if style already exists
+    if (!document.getElementById('pestel-font-styles')) {
+      const style = document.createElement('style');
+      style.id = 'pestel-font-styles'; 
+      style.innerHTML = fontStyleSheet;
+      document.head.appendChild(style);
+    }
+    
+    return () => {
+      // Clean up on unmount
+      const styleElement = document.getElementById('pestel-font-styles');
+      if (styleElement) {
+        styleElement.parentNode.removeChild(styleElement);
+      }
+    };
+  }, [fontStyleSheet]);
+
+  // Toggle all sections
+  const toggleAllSections = (value) => {
+    const newOpenSections = {};
+    Object.keys(openSections).forEach(key => {
+      newOpenSections[key] = value;
+    });
+    setOpenSections(newOpenSections);
+  };
+  
+  if (!hasData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-6">
+        <Card className="max-w-md w-full shadow-lg border border-red-200">
+          <CardHeader className="bg-red-50">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <CardTitle className="text-red-700 font-heading">No Report Data</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <p className="text-gray-700 mb-4 font-body">No analysis data is available. Please submit a form to generate a report.</p>
+            <Button onClick={onBack} className="w-full font-heading font-medium">Return to Form</Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
-
-  // At the top of ReportDisplay (inside the component, before return):
-  let unifiedReportDropdownsTop = null;
-  let unifiedReportDropdownsRest = null;
-  if (!isFinal && rawReportData.report) {
-    let unifiedReport = null;
-    try {
-      unifiedReport =
-        typeof rawReportData.report === "string"
-          ? JSON.parse(rawReportData.report)
-          : rawReportData.report;
-    } catch (e) {
-      unifiedReport = rawReportData.report;
+  
+  // Render individual dimension report
+  const renderDimensionReport = (dimension) => {
+    const key = `${dimension.toLowerCase()}_report`;
+    const report = individualReports[key];
+    
+    if (!report) {
+      return (
+        <div className="flex flex-col items-center justify-center py-8">
+          <Card className="max-w-md w-full p-6 text-center">
+            <CardContent>
+              <p className="text-gray-500">No data available for {dimension} analysis.</p>
+            </CardContent>
+          </Card>
+        </div>
+      );
     }
-    if (unifiedReport) {
-      unifiedReportDropdownsTop = (
-        <>
-          {unifiedReport.executive_summary && (
-            <Section
-              title="Executive Summary"
-              sectionKey="unified_executive_summary"
-              openSections={openSections}
-              setOpenSections={setOpenSections}
-            >
-              {renderMarkdown(unifiedReport.executive_summary)}
-            </Section>
-          )}
-          {unifiedReport.introduction && (
-            <Section
-              title="Introduction"
-              sectionKey="unified_introduction"
-              openSections={openSections}
-              setOpenSections={setOpenSections}
-            >
-              {renderMarkdown(unifiedReport.introduction)}
-            </Section>
-          )}
-          {unifiedReport.pestel_analysis && (
-            <Section
-              title="PESTEL Analysis"
-              sectionKey="unified_pestel_analysis"
-              openSections={openSections}
-              setOpenSections={setOpenSections}
-            >
+    
+    return (
+      <div className="space-y-6">
+        {/* Executive Summary */}
+        {report.executive_summary && (
+          <ExecutiveSummarySection data={report.executive_summary} dimension={dimension} />
+        )}
+        
+        {/* Factors Analysis */}
+        {report.factors_analysis && (
+          <FactorsAnalysisSection factors={report.factors_analysis} dimension={dimension} />
+        )}
+        
+        {/* Risks & Opportunities */}
+        {report.risks_opportunities && (
+          <RisksOpportunitiesSection data={report.risks_opportunities} dimension={dimension} />
+        )}
+        
+        {/* Regional Dynamics */}
+        {report.regional_dynamics && (
+          <RegionalDynamicsSection regions={report.regional_dynamics} dimension={dimension} />
+        )}
+        
+        {/* Scenario Analysis */}
+        {report.scenario_analysis && (
+          <ScenarioAnalysisSection scenarios={report.scenario_analysis} dimension={dimension} />
+        )}
+        
+        {/* Recommendations */}
+        {report.recommendations && (
+          <RecommendationsSection recommendations={report.recommendations} dimension={dimension} />
+        )}
+      </div>
+    );
+  };
+  
+  // Render final report content - still used but not in tabs
+  const renderFinalReport = () => {
+    if (!finalReport) {
+      return (
+        <div className="flex flex-col items-center justify-center py-8">
+          <Card className="max-w-md w-full p-6 text-center">
+            <CardContent>
+              <p className="text-gray-500">No consolidated report available. Please check individual dimension analyses.</p>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-6">
+        {/* Executive Summary */}
+        {finalReport.executive_summary && (
+          <ExecutiveSummarySection data={finalReport.executive_summary} dimension="Final" />
+        )}
+        
+        {/* Introduction */}
+        {finalReport.introduction && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-6 h-6" />
+                <CardTitle>Introduction</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6 bg-indigo-50">
+              {renderMarkdown(finalReport.introduction)}
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* PESTEL Analysis */}
+        {finalReport.pestel_analysis && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <PieChart className="w-6 h-6" />
+                <CardTitle>PESTEL Analysis</CardTitle>
+              </div>
+              <CardDescription className="text-white opacity-90">
+                Comprehensive analysis across all six dimensions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/*
-                  { key: "political_factors", label: "Political" },
-                  { key: "economic_factors", label: "Economic" },
-                  { key: "social_factors", label: "Social" },
-                  { key: "technological_factors", label: "Technological" },
-                  { key: "environmental_factors", label: "Environmental" },
-                  { key: "legal_factors", label: "Legal" }
-                */}
                 {[
                   { key: "political_factors", label: "Political" },
                   { key: "economic_factors", label: "Economic" },
@@ -285,731 +982,294 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
                   { key: "environmental_factors", label: "Environmental" },
                   { key: "legal_factors", label: "Legal" },
                 ].map(({ key, label }) => {
-                  const value = unifiedReport.pestel_analysis[key];
+                  const dimConfig = dimensionConfig[label];
+                  const value = finalReport.pestel_analysis[key];
+                  
                   return (
-                    <div
-                      key={key}
-                      className={`bg-${
-                        sectionColorMap[label] || "gray"
-                      }-50 rounded-lg p-4 border`}
+                    <Card 
+                      key={key} 
+                      className={`border ${dimConfig.borderColor} shadow-sm hover:shadow-md transition-shadow duration-200`}
                     >
-                      <h3 className="text-lg font-bold mb-2 text-gray-800">
-                        {label}
-                      </h3>
-                      {value ? (
-                        renderMarkdown(value)
-                      ) : (
-                        <span className="text-gray-400">
-                          No data for {label}.
-                        </span>
-                      )}
-                    </div>
+                      <CardHeader className={`${dimConfig.bgLight} pb-3`}>
+                        <div className="flex items-center gap-2">
+                          {dimConfig.icon}
+                          <CardTitle className={`text-lg ${dimConfig.textColor}`}>{label}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        {value ? (
+                          <div className="text-gray-700">{renderMarkdown(value)}</div>
+                        ) : (
+                          <p className="text-gray-400 italic">No data available.</p>
+                        )}
+                      </CardContent>
+                    </Card>
                   );
                 })}
               </div>
-            </Section>
-          )}
-        </>
-      );
-      unifiedReportDropdownsRest = (
-        <>
-          {Array.isArray(unifiedReport.strategic_implications) &&
-            unifiedReport.strategic_implications.length > 0 && (
-              <Section
-                title="Strategic Implications"
-                sectionKey="unified_strategic_implications"
-                openSections={openSections}
-                setOpenSections={setOpenSections}
-              >
-                {unifiedReport.strategic_implications.map((imp, idx) => (
-                  <div key={idx} className="mb-6">
-                    <h3 className="text-lg font-bold mb-1 text-gray-800">
-                      {imp.implication_title}
-                    </h3>
-                    {renderMarkdown(imp.analysis)}
-                    {imp.affected_dimensions && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {imp.affected_dimensions.map((dim, i) => (
-                          <Badge key={i} className="bg-blue-700 text-white">
-                            {dim}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </Section>
-            )}
-          {unifiedReport.opportunities_threats_matrix &&
-            Array.isArray(
-              unifiedReport.opportunities_threats_matrix.dimensions
-            ) &&
-            unifiedReport.opportunities_threats_matrix.dimensions.length >
-              0 && (
-              <Section
-                title="Opportunities & Threats Matrix"
-                sectionKey="unified_opportunities_threats_matrix"
-                openSections={openSections}
-                setOpenSections={setOpenSections}
-              >
-                <div className="overflow-x-auto mt-2">
-                  <table className="min-w-full divide-y divide-gray-300 shadow-lg border border-gray-300 rounded-lg">
-                    <thead>
-                      <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
-                        <th className="px-6 py-4 text-left text-base font-semibold text-gray-800 uppercase tracking-wider border-b-2 border-gray-300 w-1/5">
-                          Dimension
-                        </th>
-                        <th className="px-6 py-4 text-left text-base font-semibold text-emerald-800 uppercase tracking-wider border-b-2 border-gray-300">
-                          Opportunities
-                        </th>
-                        <th className="px-6 py-4 text-left text-base font-semibold text-amber-800 uppercase tracking-wider border-b-2 border-gray-300">
-                          Threats
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {unifiedReport.opportunities_threats_matrix.dimensions.map(
-                        (dim, idx) => (
-                          <tr
-                            key={idx}
-                            className={
-                              idx % 2 === 0
-                                ? "bg-white hover:bg-gray-50"
-                                : "bg-gray-50 hover:bg-gray-100"
-                            }
-                          >
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
-                              {dim.dimension}
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-700 border-r border-gray-200">
-                              {dim.opportunities.map((item, i) => (
-                                <p key={i} className="mb-2 last:mb-0">
-                                  • {item.trim()}
-                                </p>
-                              ))}
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-700">
-                              {dim.threats.map((item, i) => (
-                                <p key={i} className="mb-2 last:mb-0">
-                                  • {item.trim()}
-                                </p>
-                              ))}
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </Section>
-            )}
-          {Array.isArray(unifiedReport.strategic_recommendations) &&
-            unifiedReport.strategic_recommendations.length > 0 && (
-              <Section
-                title="Strategic Recommendations"
-                sectionKey="unified_strategic_recommendations"
-                openSections={openSections}
-                setOpenSections={setOpenSections}
-              >
-                {unifiedReport.strategic_recommendations.map((rec, idx) => (
-                  <div
-                    key={idx}
-                    className="p-5 bg-white rounded-lg shadow-md border border-cyan-100 mb-4"
-                  >
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center font-bold">
-                        {rec.recommendation_number}
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-800">
-                        {rec.recommendation}
-                      </h3>
-                    </div>
-                    {rec.related_dimensions && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {rec.related_dimensions.map((dim, i) => (
-                          <Badge key={i} className="bg-blue-700 text-white">
-                            {dim}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    {rec.implementation_priority && (
-                      <div className="flex items-center gap-2 mt-3">
-                        <span className="text-sm text-gray-600">Priority:</span>
-                        <Badge
-                          className="text-xs"
-                          style={{
-                            backgroundColor: getPriorityColor(
-                              rec.implementation_priority
-                            ),
-                            color: "white",
-                          }}
-                        >
-                          {rec.implementation_priority}
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </Section>
-            )}
-          {unifiedReport.conclusion && (
-            <Section
-              title="Conclusion"
-              sectionKey="unified_conclusion"
-              openSections={openSections}
-              setOpenSections={setOpenSections}
-            >
-              {renderMarkdown(unifiedReport.conclusion)}
-            </Section>
-          )}
-        </>
-      );
-    }
-  }
-
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Strategic Implications */}
+        {finalReport.pestel_analysis?.strategic_implications && (
+          <StrategicImplicationsSection implications={finalReport.pestel_analysis.strategic_implications} />
+        )}
+        
+        {/* Opportunities & Threats Matrix */}
+        {finalReport.pestel_analysis?.opportunities_threats_matrix && (
+          <OpportunitiesThreatsMatrixSection matrix={finalReport.pestel_analysis.opportunities_threats_matrix} />
+        )}
+        
+        {/* Strategic Recommendations */}
+        {finalReport.strategic_recommendations && (
+          <RecommendationsSection 
+            recommendations={finalReport.strategic_recommendations} 
+            dimension="Final" 
+          />
+        )}
+        
+        {/* Conclusion */}
+        {finalReport.conclusion && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <FileText className="w-6 h-6" />
+                <CardTitle>Conclusion</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6 bg-indigo-50">
+              {renderMarkdown(finalReport.conclusion)}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    );
+  };
+  
+  // Render unified report
+  const renderUnifiedReport = () => {
+    if (!report) return null;
+    
+    return (
+      <div className="space-y-6">
+        {/* Executive Summary */}
+        {report.executive_summary && (
+          <ExecutiveSummarySection data={report.executive_summary} dimension="Final" />
+        )}
+        
+        {/* Introduction */}
+        {report.introduction && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-6 h-6" />
+                <CardTitle>Introduction</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6 bg-indigo-50">
+              {renderMarkdown(report.introduction)}
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* PESTEL Analysis */}
+        {report.pestel_analysis && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <PieChart className="w-6 h-6" />
+                <CardTitle>PESTEL Analysis</CardTitle>
+              </div>
+              <CardDescription className="text-white opacity-90">
+                Comprehensive analysis across all six dimensions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { key: "political_factors", label: "Political" },
+                  { key: "economic_factors", label: "Economic" },
+                  { key: "social_factors", label: "Social" },
+                  { key: "technological_factors", label: "Technological" },
+                  { key: "environmental_factors", label: "Environmental" },
+                  { key: "legal_factors", label: "Legal" },
+                ].map(({ key, label }) => {
+                  const dimConfig = dimensionConfig[label];
+                  const value = report.pestel_analysis[key];
+                  
+                  return (
+                    <Card 
+                      key={key} 
+                      className={`border ${dimConfig.borderColor} shadow-sm hover:shadow-md transition-shadow duration-200`}
+                    >
+                      <CardHeader className={`${dimConfig.bgLight} pb-3`}>
+                        <div className="flex items-center gap-2">
+                          {dimConfig.icon}
+                          <CardTitle className={`text-lg ${dimConfig.textColor}`}>{label}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        {value ? (
+                          <div className="text-gray-700">{renderMarkdown(value)}</div>
+                        ) : (
+                          <p className="text-gray-400 italic">No data available.</p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Strategic Implications */}
+        {report.strategic_implications && (
+          <StrategicImplicationsSection implications={report.strategic_implications} />
+        )}
+        
+        {/* Opportunities & Threats Matrix */}
+        {report.opportunities_threats_matrix && (
+          <OpportunitiesThreatsMatrixSection matrix={report.opportunities_threats_matrix} />
+        )}
+        
+        {/* Strategic Recommendations */}
+        {report.strategic_recommendations && (
+          <RecommendationsSection 
+            recommendations={report.strategic_recommendations} 
+            dimension="Final" 
+          />
+        )}
+        
+        {/* Conclusion */}
+        {report.conclusion && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+              <div className="flex items-center gap-2">
+                <FileText className="w-6 h-6" />
+                <CardTitle>Conclusion</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6 bg-indigo-50">
+              {renderMarkdown(report.conclusion)}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    );
+  };
+  
   return (
-    <div className="container mx-auto p-4 space-y-6 max-w-4xl">
-      <header className="pt-4 pb-3">
-        <div className="flex justify-between items-center mb-4">
-          <Button
-            onClick={onBack}
-            variant="outline"
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <header className="mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <Button 
+            onClick={onBack} 
+            variant="outline" 
+            className="flex items-center gap-2 mb-4 md:mb-0 font-heading"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft className="w-4 h-4" />
             <span>Return to Form</span>
           </Button>
+          
           <div className="flex items-center gap-3">
-            <Button
-              onClick={() => toggleAll(true)}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-1 text-gray-700 hover:text-gray-900"
+            <Button 
+              onClick={() => toggleAllSections(true)} 
+              size="sm" 
+              variant="outline" 
+              className="flex items-center gap-1 font-body"
             >
-              <Plus size={14} /> Expand All
+              <Plus className="w-4 h-4" /> Expand All
             </Button>
-            <Button
-              onClick={() => toggleAll(false)}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-1 text-gray-700 hover:text-gray-900"
+            <Button 
+              onClick={() => toggleAllSections(false)} 
+              size="sm" 
+              variant="outline" 
+              className="flex items-center gap-1 font-body"
             >
-              <Minus size={14} /> Collapse All
+              <Minus className="w-4 h-4" /> Collapse All
             </Button>
-            <Button
-              onClick={() => window.print()}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-1 text-gray-700 hover:text-gray-900"
+            <Button 
+              onClick={() => window.print()} 
+              size="sm" 
+              variant="outline" 
+              className="flex items-center gap-1 font-body"
             >
-              <ExternalLink size={14} /> Export
+              <ExternalLink className="w-4 h-4" /> Export
             </Button>
           </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-md shadow-md rounded-lg p-3">
-          <h1 className="text-3xl font-bold text-gray-900">
-            PESTEL Analysis Report
-          </h1>
+        
+        <div className="bg-gradient-to-r from-indigo-800 to-purple-800 rounded-xl shadow-xl p-8 text-white">
+          <h1 className="text-4xl font-heading font-bold mb-3 tracking-tight">PESTEL Analysis Report</h1>
+          <p className="text-lg opacity-90 font-body">Comprehensive market analysis for strategic decision-making</p>
+          <div className="flex items-center gap-2 mt-4">
+            <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
+            <span className="text-sm font-medium font-body">Analysis completed on {new Date().toLocaleDateString()}</span>
+          </div>
         </div>
       </header>
-      {/* FINAL REPORT SCHEMA */}
-      {isFinal && (
-        <>
-          <Section
-            title="Executive Summary"
-            sectionKey="executive_summary"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            {renderMarkdown(reportData.executive_summary)}
-          </Section>
-          <Section
-            title="Introduction"
-            sectionKey="introduction"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            {renderMarkdown(reportData.introduction)}
-          </Section>
-          <Section
-            title="PESTEL Analysis"
-            sectionKey="pestel_analysis"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                { key: "political_factors", label: "Political" },
-                { key: "economic_factors", label: "Economic" },
-                { key: "social_factors", label: "Social" },
-                { key: "technological_factors", label: "Technological" },
-                { key: "environmental_factors", label: "Environmental" },
-                { key: "legal_factors", label: "Legal" },
-              ].map(({ key, label }) => {
-                const value =
-                  reportData.pestel_analysis && reportData.pestel_analysis[key];
-                return (
-                  <div
-                    key={key}
-                    className={`bg-${
-                      sectionColorMap[label] || "gray"
-                    }-50 rounded-lg p-4 border`}
-                  >
-                    <h3 className="text-lg font-bold mb-2 text-gray-800">
-                      {label}
-                    </h3>
-                    {value ? (
-                      renderMarkdown(value)
-                    ) : (
-                      <span className="text-gray-400">
-                        No data for {label}.
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </Section>
-          <Section
-            title="Strategic Implications"
-            sectionKey="strategic_implications"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            {reportData.strategic_implications.map((imp, idx) => (
-              <div key={idx} className="mb-6">
-                <h3 className="text-lg font-bold mb-1 text-gray-800">
-                  {imp.implication_title}
-                </h3>
-                {renderMarkdown(imp.analysis)}
-                {imp.affected_dimensions && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {imp.affected_dimensions.map((dim, i) => (
-                      <Badge key={i} className="bg-blue-700 text-white">
-                        {dim}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </Section>
-          <Section
-            title="Opportunities & Threats Matrix"
-            sectionKey="opportunities_threats_matrix"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            <div className="overflow-x-auto mt-2">
-              <table className="min-w-full divide-y divide-gray-300 shadow-lg border border-gray-300 rounded-lg">
-                <thead>
-                  <tr className="bg-gradient-to-r from-gray-100 to-gray-200">
-                    <th className="px-6 py-4 text-left text-base font-semibold text-gray-800 uppercase tracking-wider border-b-2 border-gray-300 w-1/5">
-                      Dimension
-                    </th>
-                    <th className="px-6 py-4 text-left text-base font-semibold text-emerald-800 uppercase tracking-wider border-b-2 border-gray-300">
-                      Opportunities
-                    </th>
-                    <th className="px-6 py-4 text-left text-base font-semibold text-amber-800 uppercase tracking-wider border-b-2 border-gray-300">
-                      Threats
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {reportData.opportunities_threats_matrix.dimensions.map(
-                    (dim, idx) => (
-                      <tr
-                        key={idx}
-                        className={
-                          idx % 2 === 0
-                            ? "bg-white hover:bg-gray-50"
-                            : "bg-gray-50 hover:bg-gray-100"
-                        }
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
-                          {dim.dimension}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700 border-r border-gray-200">
-                          {dim.opportunities.map((item, i) => (
-                            <p key={i} className="mb-2 last:mb-0">
-                              • {item.trim()}
-                            </p>
-                          ))}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {dim.threats.map((item, i) => (
-                            <p key={i} className="mb-2 last:mb-0">
-                              • {item.trim()}
-                            </p>
-                          ))}
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Section>
-          <Section
-            title="Strategic Recommendations"
-            sectionKey="strategic_recommendations"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            {reportData.strategic_recommendations.map((rec, idx) => (
-              <div
-                key={idx}
-                className="p-5 bg-white rounded-lg shadow-md border border-cyan-100 mb-4"
-              >
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center font-bold">
-                    {rec.recommendation_number}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {rec.recommendation}
-                  </h3>
-                </div>
-                {rec.related_dimensions && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {rec.related_dimensions.map((dim, i) => (
-                      <Badge key={i} className="bg-blue-700 text-white">
-                        {dim}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-                {rec.implementation_priority && (
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className="text-sm text-gray-600">Priority:</span>
-                    <Badge
-                      className="text-xs"
-                      style={{
-                        backgroundColor: getPriorityColor(
-                          rec.implementation_priority
-                        ),
-                        color: "white",
-                      }}
-                    >
-                      {rec.implementation_priority}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-            ))}
-          </Section>
-          <Section
-            title="Conclusion"
-            sectionKey="conclusion"
-            openSections={openSections}
-            setOpenSections={setOpenSections}
-          >
-            {renderMarkdown(reportData.conclusion)}
-          </Section>
-        </>
-      )}
-      {/* CROSS-DIMENSIONAL UNIFIED REPORT (top 3 sections) */}
-      {!isFinal && rawReportData.report && unifiedReportDropdownsTop}
-      {/* INDIVIDUAL REPORT SCHEMA (6 PESTEL dropdowns) */}
-      {!isFinal && rawReportData.individual_reports && (
-        <>
-          {PESTEL_KEYS.map(({ key, label }) => {
-            const reportStr = rawReportData.individual_reports[key];
-            let report = null;
-            try {
-              report = reportStr ? JSON.parse(reportStr) : null;
-            } catch (e) {
-              report = reportStr || null;
-            }
-            if (!report) return null;
-            return (
-              <Section
-                key={key}
-                title={`${label} Analysis`}
-                sectionKey={`pestel_${key}`}
-                openSections={openSections}
-                setOpenSections={setOpenSections}
-                // badgeColor and badgeText removed
-              >
-                {/* Executive Summary */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold mb-2 text-gray-800">
-                    Executive Summary
-                  </h3>
-                  {renderMarkdown(report.executive_summary) || (
-                    <div className="text-gray-500">
-                      No executive summary available.
-                    </div>
-                  )}
-                </div>
-                {/* Factors Analysis */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold mb-2 text-gray-800">
-                    Factors Analysis
-                  </h3>
-                  {Array.isArray(report.factors_analysis) &&
-                  report.factors_analysis.length > 0 ? (
-                    report.factors_analysis.map((factor, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-4"
-                      >
-                        <h4 className="font-semibold mb-1">
-                          {factor.factor_name || (
-                            <span className="text-gray-400">
-                              No factor name
-                            </span>
-                          )}
-                        </h4>
-                        <div className="mb-2">
-                          {renderMarkdown(factor.analysis) || (
-                            <span className="text-gray-400">No analysis</span>
-                          )}
-                        </div>
-                        {Array.isArray(factor.key_indicators) &&
-                        factor.key_indicators.length > 0 ? (
-                          <div className="mt-2">
-                            <span className="font-semibold text-gray-700">
-                              Key Indicators:
-                            </span>
-                            <ul className="list-disc ml-6">
-                              {factor.key_indicators.map((ind, i) => (
-                                <li key={i}>{ind}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : (
-                          <div className="text-gray-400">
-                            No key indicators.
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-gray-500">
-                      No factors analysis available.
-                    </div>
-                  )}
-                </div>
-                {/* Risks & Opportunities */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold mb-2 text-gray-800">
-                    Risks & Opportunities
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-bold text-red-700 mb-2">Risks</h4>
-                      {report.risks_opportunities &&
-                      Array.isArray(report.risks_opportunities.risks) &&
-                      report.risks_opportunities.risks.length > 0 ? (
-                        <ul className="space-y-2">
-                          {report.risks_opportunities.risks.map((risk, i) => (
-                            <li
-                              key={i}
-                              className="bg-red-50 rounded p-3 border border-red-100"
-                            >
-                              <div className="font-semibold text-gray-800">
-                                {risk.risk_title || (
-                                  <span className="text-gray-400">
-                                    No title
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-gray-700 text-sm mb-1">
-                                {risk.description || (
-                                  <span className="text-gray-400">
-                                    No description
-                                  </span>
-                                )}
-                              </div>
-                              {risk.impact_level && (
-                                <Badge
-                                  style={{
-                                    backgroundColor: getPriorityColor(
-                                      risk.impact_level
-                                    ),
-                                    color: "white",
-                                  }}
-                                >
-                                  {risk.impact_level}
-                                </Badge>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="text-gray-500">No risks listed.</div>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-green-700 mb-2">
-                        Opportunities
-                      </h4>
-                      {report.risks_opportunities &&
-                      Array.isArray(report.risks_opportunities.opportunities) &&
-                      report.risks_opportunities.opportunities.length > 0 ? (
-                        <ul className="space-y-2">
-                          {report.risks_opportunities.opportunities.map(
-                            (op, i) => (
-                              <li
-                                key={i}
-                                className="bg-green-50 rounded p-3 border border-green-100"
-                              >
-                                <div className="font-semibold text-gray-800">
-                                  {op.opportunity_title || (
-                                    <span className="text-gray-400">
-                                      No title
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="text-gray-700 text-sm mb-1">
-                                  {op.description || (
-                                    <span className="text-gray-400">
-                                      No description
-                                    </span>
-                                  )}
-                                </div>
-                                {op.potential_benefit && (
-                                  <Badge
-                                    style={{
-                                      backgroundColor: getPriorityColor(
-                                        op.potential_benefit
-                                      ),
-                                      color: "white",
-                                    }}
-                                  >
-                                    {op.potential_benefit}
-                                  </Badge>
-                                )}
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      ) : (
-                        <div className="text-gray-500">
-                          No opportunities listed.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                {/* Scenario Analysis */}
-                {Array.isArray(report.scenario_analysis) &&
-                  report.scenario_analysis.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-bold mb-2 text-gray-800">
-                        Scenario Analysis
-                      </h3>
-                      {report.scenario_analysis.map((sc, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-purple-50 rounded p-3 border border-purple-100 mb-3"
-                        >
-                          <div className="font-bold text-purple-800">
-                            {sc.scenario_name || (
-                              <span className="text-gray-400">
-                                No scenario name
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-gray-800 mb-1">
-                            <span className="font-semibold">Drivers:</span>{" "}
-                            {sc.drivers || (
-                              <span className="text-gray-400">No drivers</span>
-                            )}
-                          </div>
-                          <div className="text-gray-800 mb-1">
-                            <span className="font-semibold">Outcome:</span>{" "}
-                            {sc.outcome || (
-                              <span className="text-gray-400">No outcome</span>
-                            )}
-                          </div>
-                          {sc.probability && (
-                            <Badge
-                              style={{
-                                backgroundColor: getPriorityColor(
-                                  sc.probability
-                                ),
-                                color: "white",
-                              }}
-                            >
-                              {sc.probability}
-                            </Badge>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                {/* Recommendations */}
-                <div className="mb-2">
-                  <h3 className="text-lg font-bold mb-2 text-gray-800">
-                    Recommendations
-                  </h3>
-                  {Array.isArray(report.recommendations) &&
-                  report.recommendations.length > 0 ? (
-                    report.recommendations.map((rec, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-cyan-50 rounded p-4 border border-cyan-100 mb-3"
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-bold text-cyan-800">
-                            {rec.recommendation_title || (
-                              <span className="text-gray-400">No title</span>
-                            )}
-                          </span>
-                          {rec.priority && (
-                            <Badge
-                              style={{
-                                backgroundColor: getPriorityColor(rec.priority),
-                                color: "white",
-                              }}
-                            >
-                              {rec.priority}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="text-gray-800 mb-2">
-                          {rec.description || (
-                            <span className="text-gray-400">
-                              No description
-                            </span>
-                          )}
-                        </div>
-                        {Array.isArray(rec.implementation_steps) &&
-                        rec.implementation_steps.length > 0 ? (
-                          <div className="mb-2">
-                            <span className="font-semibold text-gray-700">
-                              Implementation Steps:
-                            </span>
-                            <ul className="list-decimal ml-6">
-                              {rec.implementation_steps.map((step, i) => (
-                                <li key={i}>{step}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : (
-                          <div className="text-gray-400">
-                            No implementation steps.
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-gray-500">
-                      No recommendations available.
-                    </div>
-                  )}
-                </div>
-              </Section>
-            );
-          })}
-        </>
-      )}
-      {/* CROSS-DIMENSIONAL UNIFIED REPORT (rest of sections) */}
-      {!isFinal && rawReportData.report && unifiedReportDropdownsRest}
-      <footer className="mt-10 text-center text-gray-500 text-sm pb-10">
-        <p>PESTEL Analysis generated on {new Date().toLocaleDateString()}</p>
+      
+      <main>
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="bg-white rounded-lg shadow-md p-1 mb-6 overflow-x-auto">
+            <TabsList className="w-full justify-start">
+              {/* Unified tab first if it exists */}
+              {report && (
+                <TabsTrigger value="Unified" className="flex items-center gap-1 font-special">
+                  <PieChart className="w-4 h-4" />
+                  <span>PESTEL Analysis</span>
+                </TabsTrigger>
+              )}
+              
+              {/* Sort and render dimension tabs in PESTEL order */}
+              {dimensionKeys
+                .filter(key => key !== "Unified") // Exclude Unified from sorted tabs
+                .map(dimension => {
+                  const key = `${dimension.toLowerCase()}_report`;
+                  const dimConfig = dimensionConfig[dimension];
+                  
+                  return (
+                    <TabsTrigger key={key} value={dimension} className="flex items-center gap-1 font-special">
+                      {dimConfig.icon}
+                      <span>{dimension}</span>
+                    </TabsTrigger>
+                  );
+                })}
+            </TabsList>
+          </div>
+          
+          {/* Content will now be shown based on the tab selection */}
+          {report && (
+            <TabsContent value="Unified" className="mt-0">
+              {renderUnifiedReport()}
+            </TabsContent>
+          )}
+          
+          {/* Individual Dimension Tabs */}
+          {Object.entries(individualReports)
+            .map(([key, value]) => {
+              const match = key.match(/^(\w+)_report$/);
+              if (!match) return null;
+              
+              const dimension = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+              if (!dimensionConfig[dimension] || dimension === "Final") return null;
+              
+              return (
+                <TabsContent key={key} value={dimension} className="mt-0">
+                  {renderDimensionReport(dimension)}
+                </TabsContent>
+              );
+            })}
+        </Tabs>
+        
+        {/* If finalReport exists but there's no unified report, render it below */}
+        {finalReport && !report && renderFinalReport()}
+      </main>
+      
+      <footer className="text-center text-gray-500 text-sm py-8 font-body">
+        <p>© {new Date().getFullYear()} PESTEL Analysis Tool - All rights reserved</p>
       </footer>
     </div>
   );
