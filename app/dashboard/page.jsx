@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/components/content/home";
@@ -18,7 +18,24 @@ import {
 } from "react-icons/fa";
 
 const Dashboard = () => {
-  const [activeContent, setActiveContent] = useState("home");
+  // Check URL for content parameter
+  const [activeContent, setActiveContent] = useState(() => {
+    // Only run on client side
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const contentParam = urlParams.get("content");
+      return contentParam || "home";
+    }
+    return "home";  });
+  
+  // Update URL when activeContent changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location);
+      url.searchParams.set("content", activeContent);
+      window.history.replaceState({}, "", url);
+    }
+  }, [activeContent]);
 
   const menuItems = [
     { icon: FaHome, label: "Home", key: "home" },

@@ -167,9 +167,9 @@ const Report = ({ reportData, onBack }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-700">{error}</p>
+            <p className="text-gray-700">{error}</p>{" "}
             <Button
-              onClick={onBack}
+              onClick={() => (window.location.href = "/dashboard?content=form")}
               className="mt-4 bg-blue-600 hover:bg-blue-700"
             >
               Return to Form
@@ -210,9 +210,9 @@ const Report = ({ reportData, onBack }) => {
             </div>
             <p className="text-lg font-medium text-gray-500 text-center">
               Please submit a form to generate a PESTEL analysis report
-            </p>
+            </p>{" "}
             <Button
-              onClick={onBack}
+              onClick={() => (window.location.href = "/dashboard?content=form")}
               className="mt-6 bg-indigo-600 hover:bg-indigo-700"
             >
               Return to Form
@@ -236,9 +236,9 @@ const Report = ({ reportData, onBack }) => {
               <p className="text-indigo-100 mt-1">
                 Select a report to view detailed analysis
               </p>
-            </div>
+            </div>{" "}
             <Button
-              onClick={onBack}
+              onClick={() => (window.location.href = "/dashboard?content=form")}
               variant="outline"
               className="bg-white text-indigo-600 hover:bg-indigo-50"
             >
