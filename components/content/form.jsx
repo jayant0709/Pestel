@@ -126,13 +126,19 @@ const Form = () => {
     setIsLoading(true);
 
     try {
-      // Only send to local Flask backend
-      const response = await fetch("http://127.0.0.1:8080/submit-analysis", {
+      // Set the email from the session
+      const submissionData = {
+        ...formData,
+        email: session.user.email,
+      };
+
+      // Send to Next.js API endpoint to save in MongoDB
+      const response = await fetch("/api/analysis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submissionData),
       });
 
       if (!response.ok) {
@@ -142,10 +148,36 @@ const Form = () => {
       const data = await response.json();
 
       if (data.success) {
-        setReportData(data);
-        setShowReport(true);
+        // Keep the Flask response for report generation if needed
+        try {
+          // Additionally send to Flask backend for analysis report
+          const flaskResponse = await fetch(
+            "http://127.0.0.1:8080/submit-analysis",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(submissionData),
+            }
+          );
+
+          if (flaskResponse.ok) {
+            const reportData = await flaskResponse.json();
+            setReportData(reportData);
+            setShowReport(true);
+          } else {
+            // If Flask fails, we can still show a success message for DB storage
+            alert("Form saved successfully, but report generation failed.");
+          }
+        } catch (flaskError) {
+          console.error("Flask API Error:", flaskError);
+          alert(
+            "Your data was saved successfully, but we couldn't generate a report at this time."
+          );
+        }
       } else {
-        alert("Error submitting analysis: " + (data.error || "Unknown error"));
+        alert("Error saving analysis: " + (data.error || "Unknown error"));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -157,7 +189,10 @@ const Form = () => {
 
   if (showReport && reportData) {
     return (
-      <ReportDisplay reportData={reportData} onBack={() => setShowReport(false)} />
+      <ReportDisplay
+        reportData={reportData}
+        onBack={() => setShowReport(false)}
+      />
     );
   }
 
@@ -342,7 +377,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-indigo-500"
                     />
-                    <Label htmlFor={`political_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`political_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -383,7 +421,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-green-500"
                     />
-                    <Label htmlFor={`economic_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`economic_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -424,7 +465,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-blue-500"
                     />
-                    <Label htmlFor={`social_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`social_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -465,7 +509,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-cyan-500"
                     />
-                    <Label htmlFor={`technological_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`technological_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -506,7 +553,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-teal-500"
                     />
-                    <Label htmlFor={`environmental_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`environmental_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -547,7 +597,10 @@ const Form = () => {
                       }}
                       className="data-[state=checked]:bg-amber-500"
                     />
-                    <Label htmlFor={`legal_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`legal_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
@@ -565,8 +618,12 @@ const Form = () => {
             <Separator className="my-3 bg-purple-100" />
 
             <div className="space-y-2">
-              <Label htmlFor="additional_notes" className="text-gray-700 font-medium">
-                Provide any additional information, context or specific requirements for the analysis
+              <Label
+                htmlFor="additional_notes"
+                className="text-gray-700 font-medium"
+              >
+                Provide any additional information, context or specific
+                requirements for the analysis
               </Label>
               <Textarea
                 id="additional_notes"

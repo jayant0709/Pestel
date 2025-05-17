@@ -34,18 +34,16 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Ensure political_factors object exists
-    if (!data.political_factors) {
-      data.political_factors = {
-        government_policies: false,
-        political_stability: false,
-        tax_regulations: false,
-        industry_regulations: false,
-        global_trade_agreements: false,
-        notes: '',
-      };
-    }
+    // Ensure all PESTEL factor objects exist
+    if (!data.political_factors) data.political_factors = {};
+    if (!data.economic_factors) data.economic_factors = {};
+    if (!data.social_factors) data.social_factors = {};
+    if (!data.technological_factors) data.technological_factors = {};
+    if (!data.environmental_factors) data.environmental_factors = {};
+    if (!data.legal_factors) data.legal_factors = {};
+    if (!data.additional_notes) data.additional_notes = '';
 
+    // Save the entire form data as per the updated schema
     const analysis = await Analysis.create(data);
 
     return NextResponse.json({
