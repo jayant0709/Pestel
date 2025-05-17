@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChevronDown,
   ArrowLeft,
@@ -31,14 +26,26 @@ import {
   Users,
   Sprout,
   Scale,
-  Smartphone
+  Smartphone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 // Color schemes for each PESTEL dimension
 const dimensionConfig = {
@@ -111,20 +118,21 @@ const dimensionConfig = {
     bgMedium: "bg-indigo-100",
     borderColor: "border-indigo-200",
     textColor: "text-indigo-700",
-  }
+  },
 };
 
 // Priority colors and labels
 const getPriorityConfig = (priority) => {
-  if (!priority) return {
-    color: "gray",
-    bgColor: "bg-gray-100",
-    textColor: "text-gray-700",
-    borderColor: "border-gray-200",
-  };
-  
+  if (!priority)
+    return {
+      color: "gray",
+      bgColor: "bg-gray-100",
+      textColor: "text-gray-700",
+      borderColor: "border-gray-200",
+    };
+
   const p = priority.toLowerCase();
-  
+
   if (p.includes("immediate") || p.includes("critical"))
     return {
       color: "red",
@@ -165,7 +173,7 @@ const getPriorityConfig = (priority) => {
       borderColor: "border-purple-200",
       icon: <Globe className="w-4 h-4 mr-1" />,
     };
-  
+
   return {
     color: "gray",
     bgColor: "bg-gray-100",
@@ -177,17 +185,23 @@ const getPriorityConfig = (priority) => {
 // Helper: Render text with markdown-like formatting
 const renderMarkdown = (content) => {
   if (!content) return null;
-  
+
   return content.split(/\n{2,}/).map((block, i) => {
     if (block.startsWith("### "))
       return (
-        <h3 key={i} className="text-xl font-heading font-semibold mt-5 mb-3 text-gray-800">
+        <h3
+          key={i}
+          className="text-xl font-heading font-semibold mt-5 mb-3 text-gray-800"
+        >
           {block.replace("### ", "")}
         </h3>
       );
     if (block.startsWith("## "))
       return (
-        <h2 key={i} className="text-2xl font-heading font-bold mt-7 mb-4 text-gray-800">
+        <h2
+          key={i}
+          className="text-2xl font-heading font-bold mt-7 mb-4 text-gray-800"
+        >
           {block.replace("## ", "")}
         </h2>
       );
@@ -195,7 +209,9 @@ const renderMarkdown = (content) => {
       return (
         <ul key={i} className="list-disc ml-6 mb-4 space-y-1.5 font-body">
           {block.split("\n").map((li, j) => (
-            <li key={j} className="text-gray-700">{li.replace("- ", "")}</li>
+            <li key={j} className="text-gray-700">
+              {li.replace("- ", "")}
+            </li>
           ))}
         </ul>
       );
@@ -203,7 +219,9 @@ const renderMarkdown = (content) => {
       return (
         <ol key={i} className="list-decimal ml-6 mb-4 space-y-1.5 font-body">
           {block.split("\n").map((li, j) => (
-            <li key={j} className="text-gray-700">{li.replace(/^\d+\. /, "")}</li>
+            <li key={j} className="text-gray-700">
+              {li.replace(/^\d+\. /, "")}
+            </li>
           ))}
         </ol>
       );
@@ -218,33 +236,38 @@ const renderMarkdown = (content) => {
 // Helper: Get a clean report object from raw data
 const parseReportData = (rawData) => {
   if (!rawData || typeof rawData !== "object") return {};
-  
+
   // Create a structured data object to hold all our report data
   const reportStructure = {
     finalReport: null,
     individualReports: {},
-    hasData: false
+    hasData: false,
   };
-  
+
   // Check for final_report
   if (rawData.final_report) {
     try {
-      reportStructure.finalReport = typeof rawData.final_report === 'object' ? 
-        rawData.final_report : JSON.parse(rawData.final_report);
+      reportStructure.finalReport =
+        typeof rawData.final_report === "object"
+          ? rawData.final_report
+          : JSON.parse(rawData.final_report);
       reportStructure.hasData = true;
     } catch (e) {
       reportStructure.finalReport = rawData.final_report;
       reportStructure.hasData = true;
     }
   }
-  
+
   // Check for individual_reports
-  if (rawData.individual_reports && typeof rawData.individual_reports === "object") {
+  if (
+    rawData.individual_reports &&
+    typeof rawData.individual_reports === "object"
+  ) {
     Object.entries(rawData.individual_reports).forEach(([key, value]) => {
       if (value) {
         try {
-          reportStructure.individualReports[key] = typeof value === 'object' ? 
-            value : JSON.parse(value);
+          reportStructure.individualReports[key] =
+            typeof value === "object" ? value : JSON.parse(value);
           reportStructure.hasData = true;
         } catch (e) {
           reportStructure.individualReports[key] = value;
@@ -253,32 +276,40 @@ const parseReportData = (rawData) => {
       }
     });
   }
-  
+
   // Check for unified report
   if (rawData.report) {
     try {
-      reportStructure.report = typeof rawData.report === 'object' ? 
-        rawData.report : JSON.parse(rawData.report);
+      reportStructure.report =
+        typeof rawData.report === "object"
+          ? rawData.report
+          : JSON.parse(rawData.report);
       reportStructure.hasData = true;
     } catch (e) {
       reportStructure.report = rawData.report;
       reportStructure.hasData = true;
     }
   }
-  
+
   return reportStructure;
 };
 
 // Component for rendering Executive Summary section
 const ExecutiveSummarySection = ({ data, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           {config.icon}
-          <CardTitle className="font-heading tracking-tight text-xl">Executive Summary</CardTitle>
+          <CardTitle className="font-heading tracking-tight text-xl">
+            Executive Summary
+          </CardTitle>
         </div>
       </CardHeader>
       <CardContent className={`p-6 ${config.bgLight}`}>
@@ -291,17 +322,23 @@ const ExecutiveSummarySection = ({ data, dimension }) => {
 // Component for rendering Factors Analysis
 const FactorsAnalysisSection = ({ factors, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
+
   if (!factors || !Array.isArray(factors) || factors.length === 0) {
     return null;
   }
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           <PieChart className="w-6 h-6" />
-          <CardTitle className="font-heading tracking-tight text-xl">Factors Analysis</CardTitle>
+          <CardTitle className="font-heading tracking-tight text-xl">
+            Factors Analysis
+          </CardTitle>
         </div>
         <CardDescription className="text-white opacity-90 font-body">
           Key factors affecting the {dimension.toLowerCase()} dimension
@@ -310,12 +347,14 @@ const FactorsAnalysisSection = ({ factors, dimension }) => {
       <CardContent className="p-6">
         <div className="grid grid-cols-1 gap-6">
           {factors.map((factor, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`rounded-xl border ${config.borderColor} overflow-hidden shadow-sm`}
             >
               <div className={`p-4 ${config.bgMedium}`}>
-                <h3 className={`text-xl font-heading font-bold ${config.textColor}`}>
+                <h3
+                  className={`text-xl font-heading font-bold ${config.textColor}`}
+                >
                   {factor.factor_name || "Unnamed Factor"}
                 </h3>
               </div>
@@ -323,16 +362,23 @@ const FactorsAnalysisSection = ({ factors, dimension }) => {
                 <div className="text-gray-700 mb-4 leading-relaxed font-body">
                   {renderMarkdown(factor.analysis)}
                 </div>
-                
+
                 {factor.key_indicators && factor.key_indicators.length > 0 && (
                   <div className="mt-4">
                     <h4 className="font-heading font-semibold text-gray-800 mb-2 flex items-center">
                       <Target className="w-4 h-4 mr-2" /> Key Indicators
                     </h4>
-                    <ul className={`list-none space-y-2 rounded-lg ${config.bgLight} p-3 font-body`}>
+                    <ul
+                      className={`list-none space-y-2 rounded-lg ${config.bgLight} p-3 font-body`}
+                    >
                       {factor.key_indicators.map((indicator, idx) => (
                         <li key={idx} className="flex items-center gap-2">
-                          <div className={`h-2 w-2 rounded-full ${config.textColor.replace('text', 'bg')}`}></div>
+                          <div
+                            className={`h-2 w-2 rounded-full ${config.textColor.replace(
+                              "text",
+                              "bg"
+                            )}`}
+                          ></div>
                           <span className="text-gray-700">{indicator}</span>
                         </li>
                       ))}
@@ -351,17 +397,21 @@ const FactorsAnalysisSection = ({ factors, dimension }) => {
 // Component for Risks & Opportunities
 const RisksOpportunitiesSection = ({ data, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
+
   if (!data || (!data.risks && !data.opportunities)) {
     return null;
   }
-  
+
   const risks = data.risks || [];
   const opportunities = data.opportunities || [];
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           <Scale className="w-6 h-6" />
           <CardTitle>Risks & Opportunities</CardTitle>
@@ -378,14 +428,17 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
               <AlertTriangle className="w-5 h-5 text-red-600" />
               <h3 className="text-xl font-bold text-red-700">Risks</h3>
             </div>
-            
+
             {risks.length > 0 ? (
               <div className="space-y-4">
                 {risks.map((risk, index) => {
                   const impactConfig = getPriorityConfig(risk.impact_level);
-                  
+
                   return (
-                    <Card key={index} className="border border-red-200 bg-red-50 shadow-sm">
+                    <Card
+                      key={index}
+                      className="border border-red-200 bg-red-50 shadow-sm"
+                    >
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg font-semibold text-gray-800">
                           {risk.risk_title || "Unnamed Risk"}
@@ -395,8 +448,12 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                         <p className="text-gray-700 mb-3">{risk.description}</p>
                         {risk.impact_level && (
                           <div className="flex items-center">
-                            <span className="text-sm text-gray-600 mr-2">Impact:</span>
-                            <Badge className={`${impactConfig.bgColor} ${impactConfig.textColor} border ${impactConfig.borderColor}`}>
+                            <span className="text-sm text-gray-600 mr-2">
+                              Impact:
+                            </span>
+                            <Badge
+                              className={`${impactConfig.bgColor} ${impactConfig.textColor} border ${impactConfig.borderColor}`}
+                            >
                               {impactConfig.icon} {risk.impact_level}
                             </Badge>
                           </div>
@@ -410,33 +467,48 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
               <p className="text-gray-500 italic">No risks identified.</p>
             )}
           </div>
-          
+
           {/* Opportunities Column */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Lightbulb className="w-5 h-5 text-green-600" />
-              <h3 className="text-xl font-bold text-green-700">Opportunities</h3>
+              <h3 className="text-xl font-bold text-green-700">
+                Opportunities
+              </h3>
             </div>
-            
+
             {opportunities.length > 0 ? (
               <div className="space-y-4">
                 {opportunities.map((opportunity, index) => {
-                  const benefitConfig = getPriorityConfig(opportunity.potential_benefit);
-                  
+                  const benefitConfig = getPriorityConfig(
+                    opportunity.potential_benefit
+                  );
+
                   return (
-                    <Card key={index} className="border border-green-200 bg-green-50 shadow-sm">
+                    <Card
+                      key={index}
+                      className="border border-green-200 bg-green-50 shadow-sm"
+                    >
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg font-semibold text-gray-800">
-                          {opportunity.opportunity_title || "Unnamed Opportunity"}
+                          {opportunity.opportunity_title ||
+                            "Unnamed Opportunity"}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="pt-0 pb-3">
-                        <p className="text-gray-700 mb-3">{opportunity.description}</p>
+                        <p className="text-gray-700 mb-3">
+                          {opportunity.description}
+                        </p>
                         {opportunity.potential_benefit && (
                           <div className="flex items-center">
-                            <span className="text-sm text-gray-600 mr-2">Potential Benefit:</span>
-                            <Badge className={`${benefitConfig.bgColor} ${benefitConfig.textColor} border ${benefitConfig.borderColor}`}>
-                              {benefitConfig.icon} {opportunity.potential_benefit}
+                            <span className="text-sm text-gray-600 mr-2">
+                              Potential Benefit:
+                            </span>
+                            <Badge
+                              className={`${benefitConfig.bgColor} ${benefitConfig.textColor} border ${benefitConfig.borderColor}`}
+                            >
+                              {benefitConfig.icon}{" "}
+                              {opportunity.potential_benefit}
                             </Badge>
                           </div>
                         )}
@@ -446,7 +518,9 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 italic">No opportunities identified.</p>
+              <p className="text-gray-500 italic">
+                No opportunities identified.
+              </p>
             )}
           </div>
         </div>
@@ -458,14 +532,18 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
 // Component for Regional Dynamics
 const RegionalDynamicsSection = ({ regions, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
+
   if (!regions || !Array.isArray(regions) || regions.length === 0) {
     return null;
   }
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           <Globe className="w-6 h-6" />
           <CardTitle>Regional Dynamics</CardTitle>
@@ -477,16 +555,19 @@ const RegionalDynamicsSection = ({ regions, dimension }) => {
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {regions.map((region, index) => (
-            <Card key={index} className={`border ${config.borderColor} shadow-sm`}>
+            <Card
+              key={index}
+              className={`border ${config.borderColor} shadow-sm`}
+            >
               <CardHeader className={`${config.bgLight} pb-3`}>
-                <CardTitle className={`text-lg font-semibold ${config.textColor}`}>
+                <CardTitle
+                  className={`text-lg font-semibold ${config.textColor}`}
+                >
                   {region.region}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-3">
-                <p className="text-gray-700">
-                  {region.analysis}
-                </p>
+                <p className="text-gray-700">{region.analysis}</p>
               </CardContent>
             </Card>
           ))}
@@ -499,14 +580,18 @@ const RegionalDynamicsSection = ({ regions, dimension }) => {
 // Component for Scenario Analysis
 const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
+
   if (!scenarios || !Array.isArray(scenarios) || scenarios.length === 0) {
     return null;
   }
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           <Package className="w-6 h-6" />
           <CardTitle>Scenario Analysis</CardTitle>
@@ -519,9 +604,12 @@ const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {scenarios.map((scenario, index) => {
             const probabilityConfig = getPriorityConfig(scenario.probability);
-            
+
             return (
-              <Card key={index} className="border border-purple-200 bg-purple-50 shadow-sm">
+              <Card
+                key={index}
+                className="border border-purple-200 bg-purple-50 shadow-sm"
+              >
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg font-semibold text-gray-800">
                     {scenario.scenario_name || "Unnamed Scenario"}
@@ -530,19 +618,27 @@ const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
                 <CardContent className="pt-0 pb-3">
                   <div className="space-y-2">
                     <div>
-                      <span className="font-semibold text-gray-800">Drivers:</span>
+                      <span className="font-semibold text-gray-800">
+                        Drivers:
+                      </span>
                       <p className="text-gray-700">{scenario.drivers}</p>
                     </div>
-                    
+
                     <div>
-                      <span className="font-semibold text-gray-800">Outcome:</span>
+                      <span className="font-semibold text-gray-800">
+                        Outcome:
+                      </span>
                       <p className="text-gray-700">{scenario.outcome}</p>
                     </div>
-                    
+
                     {scenario.probability && (
                       <div className="flex items-center mt-2">
-                        <span className="text-sm text-gray-600 mr-2">Probability:</span>
-                        <Badge className={`${probabilityConfig.bgColor} ${probabilityConfig.textColor} border ${probabilityConfig.borderColor}`}>
+                        <span className="text-sm text-gray-600 mr-2">
+                          Probability:
+                        </span>
+                        <Badge
+                          className={`${probabilityConfig.bgColor} ${probabilityConfig.textColor} border ${probabilityConfig.borderColor}`}
+                        >
                           {probabilityConfig.icon} {scenario.probability}
                         </Badge>
                       </div>
@@ -561,14 +657,22 @@ const ScenarioAnalysisSection = ({ scenarios, dimension }) => {
 // Component for Recommendations
 const RecommendationsSection = ({ recommendations, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
-  
-  if (!recommendations || !Array.isArray(recommendations) || recommendations.length === 0) {
+
+  if (
+    !recommendations ||
+    !Array.isArray(recommendations) ||
+    recommendations.length === 0
+  ) {
     return null;
   }
-  
+
   return (
-    <Card className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}>
-      <CardHeader className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}>
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-6`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white`}
+      >
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-6 h-6" />
           <CardTitle>Recommendations</CardTitle>
@@ -583,14 +687,22 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
             const priorityConfig = getPriorityConfig(
               recommendation.priority || recommendation.implementation_priority
             );
-            const title = recommendation.recommendation_title || recommendation.recommendation || "Unnamed Recommendation";
-            
+            const title =
+              recommendation.recommendation_title ||
+              recommendation.recommendation ||
+              "Unnamed Recommendation";
+
             return (
-              <Card key={index} className={`border ${config.borderColor} shadow-md hover:shadow-lg transition-shadow duration-200`}>
+              <Card
+                key={index}
+                className={`border ${config.borderColor} shadow-md hover:shadow-lg transition-shadow duration-200`}
+              >
                 <CardHeader className={`${config.bgLight} pb-3`}>
                   <div className="flex items-center gap-3">
                     {recommendation.recommendation_number && (
-                      <div className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}>
+                      <div
+                        className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
+                      >
                         {recommendation.recommendation_number}
                       </div>
                     )}
@@ -599,50 +711,72 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
                 </CardHeader>
                 <CardContent className="pt-4">
                   {/* Description */}
-                  {(recommendation.description || recommendation.recommendation) && (
+                  {(recommendation.description ||
+                    recommendation.recommendation) && (
                     <div className="mb-4">
-                      <p className="text-gray-700">{recommendation.description || recommendation.recommendation}</p>
+                      <p className="text-gray-700">
+                        {recommendation.description ||
+                          recommendation.recommendation}
+                      </p>
                     </div>
                   )}
-                  
+
                   {/* Implementation Steps */}
-                  {recommendation.implementation_steps && recommendation.implementation_steps.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-heading font-semibold text-gray-800 mb-2">Implementation Steps</h4>
-                      <ol className="list-decimal ml-5 space-y-1">
-                        {recommendation.implementation_steps.map((step, idx) => (
-                          <li key={idx} className="text-gray-700">{step}</li>
-                        ))}
-                      </ol>
-                    </div>
-                  )}
-                  
-                  {/* Related Dimensions */}
-                  {recommendation.related_dimensions && recommendation.related_dimensions.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-heading font-semibold text-gray-800 mb-2">Related Dimensions</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {recommendation.related_dimensions.map((dim, idx) => {
-                          const dimConfig = dimensionConfig[dim] || dimensionConfig.Final;
-                          return (
-                            <Badge 
-                              key={idx} 
-                              className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
-                            >
-                              {dim}
-                            </Badge>
-                          );
-                        })}
+                  {recommendation.implementation_steps &&
+                    recommendation.implementation_steps.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-heading font-semibold text-gray-800 mb-2">
+                          Implementation Steps
+                        </h4>
+                        <ol className="list-decimal ml-5 space-y-1">
+                          {recommendation.implementation_steps.map(
+                            (step, idx) => (
+                              <li key={idx} className="text-gray-700">
+                                {step}
+                              </li>
+                            )
+                          )}
+                        </ol>
                       </div>
-                    </div>
-                  )}
-                  
+                    )}
+
+                  {/* Related Dimensions */}
+                  {recommendation.related_dimensions &&
+                    recommendation.related_dimensions.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-heading font-semibold text-gray-800 mb-2">
+                          Related Dimensions
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {recommendation.related_dimensions.map((dim, idx) => {
+                            const dimConfig =
+                              dimensionConfig[dim] || dimensionConfig.Final;
+                            return (
+                              <Badge
+                                key={idx}
+                                className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
+                              >
+                                {dim}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                   {/* Priority */}
-                  {(recommendation.priority || recommendation.implementation_priority) && (
+                  {(recommendation.priority ||
+                    recommendation.implementation_priority) && (
                     <div className="flex items-center">
-                      <span className="text-sm text-gray-600 mr-2">Priority:</span>
-                      <Badge className={`${priorityConfig.bgColor} ${priorityConfig.textColor} border ${priorityConfig.borderColor}`}>
-                        {priorityConfig.icon} {recommendation.priority || recommendation.implementation_priority}
+                      <span className="text-sm text-gray-600 mr-2">
+                        Priority:
+                      </span>
+                      <Badge
+                        className={`${priorityConfig.bgColor} ${priorityConfig.textColor} border ${priorityConfig.borderColor}`}
+                      >
+                        {priorityConfig.icon}{" "}
+                        {recommendation.priority ||
+                          recommendation.implementation_priority}
                       </Badge>
                     </div>
                   )}
@@ -658,10 +792,14 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
 
 // Component for Strategic Implications
 const StrategicImplicationsSection = ({ implications }) => {
-  if (!implications || !Array.isArray(implications) || implications.length === 0) {
+  if (
+    !implications ||
+    !Array.isArray(implications) ||
+    implications.length === 0
+  ) {
     return null;
   }
-  
+
   return (
     <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
       <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
@@ -676,7 +814,10 @@ const StrategicImplicationsSection = ({ implications }) => {
       <CardContent className="p-6">
         <div className="space-y-6">
           {implications.map((implication, index) => (
-            <Card key={index} className="border border-indigo-200 shadow-sm bg-indigo-50">
+            <Card
+              key={index}
+              className="border border-indigo-200 shadow-sm bg-indigo-50"
+            >
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-semibold text-gray-800">
                   {implication.implication_title}
@@ -684,22 +825,24 @@ const StrategicImplicationsSection = ({ implications }) => {
               </CardHeader>
               <CardContent className="pt-0 pb-3">
                 <p className="text-gray-700 mb-3">{implication.analysis}</p>
-                
-                {implication.affected_dimensions && implication.affected_dimensions.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {implication.affected_dimensions.map((dim, idx) => {
-                      const dimConfig = dimensionConfig[dim] || dimensionConfig.Final;
-                      return (
-                        <Badge 
-                          key={idx} 
-                          className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
-                        >
-                          {dim}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                )}
+
+                {implication.affected_dimensions &&
+                  implication.affected_dimensions.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {implication.affected_dimensions.map((dim, idx) => {
+                        const dimConfig =
+                          dimensionConfig[dim] || dimensionConfig.Final;
+                        return (
+                          <Badge
+                            key={idx}
+                            className={`${dimConfig.bgLight} ${dimConfig.textColor} border ${dimConfig.borderColor}`}
+                          >
+                            {dim}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  )}
               </CardContent>
             </Card>
           ))}
@@ -711,10 +854,15 @@ const StrategicImplicationsSection = ({ implications }) => {
 
 // Component for Opportunities & Threats Matrix
 const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
-  if (!matrix || !matrix.dimensions || !Array.isArray(matrix.dimensions) || matrix.dimensions.length === 0) {
+  if (
+    !matrix ||
+    !matrix.dimensions ||
+    !Array.isArray(matrix.dimensions) ||
+    matrix.dimensions.length === 0
+  ) {
     return null;
   }
-  
+
   return (
     <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
       <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
@@ -731,18 +879,30 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Dimension</th>
-                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-green-700">Opportunities</th>
-                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-red-700">Threats</th>
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
+                  Dimension
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-green-700">
+                  Opportunities
+                </th>
+                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-red-700">
+                  Threats
+                </th>
               </tr>
             </thead>
             <tbody>
               {matrix.dimensions.map((dim, index) => {
-                const dimConfig = dimensionConfig[dim.dimension] || dimensionConfig.Final;
-                
+                const dimConfig =
+                  dimensionConfig[dim.dimension] || dimensionConfig.Final;
+
                 return (
-                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className={`border border-gray-300 px-4 py-3 ${dimConfig.textColor} font-medium`}>
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td
+                      className={`border border-gray-300 px-4 py-3 ${dimConfig.textColor} font-medium`}
+                    >
                       <div className="flex items-center gap-2">
                         {dimConfig.icon}
                         {dim.dimension}
@@ -751,14 +911,18 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
                     <td className="border border-gray-300 px-4 py-3">
                       <ul className="list-disc ml-5 space-y-1">
                         {dim.opportunities.map((item, idx) => (
-                          <li key={idx} className="text-gray-700">{item}</li>
+                          <li key={idx} className="text-gray-700">
+                            {item}
+                          </li>
                         ))}
                       </ul>
                     </td>
                     <td className="border border-gray-300 px-4 py-3">
                       <ul className="list-disc ml-5 space-y-1">
                         {dim.threats.map((item, idx) => (
-                          <li key={idx} className="text-gray-700">{item}</li>
+                          <li key={idx} className="text-gray-700">
+                            {item}
+                          </li>
                         ))}
                       </ul>
                     </td>
@@ -800,44 +964,52 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
   `;
 
   // Parse the report data
-  const { finalReport, individualReports, report, hasData } = parseReportData(rawReportData);
-  
+  const { finalReport, individualReports, report, hasData } =
+    parseReportData(rawReportData);
+
   // Define PESTEL order for proper sequence
-  const pestelOrder = ["Political", "Economic", "Social", "Technological", "Environmental", "Legal"];
-  
+  const pestelOrder = [
+    "Political",
+    "Economic",
+    "Social",
+    "Technological",
+    "Environmental",
+    "Legal",
+  ];
+
   // Get dimension keys for tabs - exclude Final and sort by PESTEL order
   const dimensionKeys = Object.keys(dimensionConfig)
-    .filter(key => 
-      key !== 'Final' && 
-      individualReports[`${key.toLowerCase()}_report`]
+    .filter(
+      (key) =>
+        key !== "Final" && individualReports[`${key.toLowerCase()}_report`]
     )
     .sort((a, b) => {
       const indexA = pestelOrder.indexOf(a);
       const indexB = pestelOrder.indexOf(b);
       return indexA - indexB; // Sort according to PESTEL sequence
     });
-  
+
   // Add Unified to dimension keys if report exists
   if (report) {
     dimensionKeys.unshift("Unified");
   }
-  
+
   const [activeTab, setActiveTab] = useState(dimensionKeys[0] || "Unified");
   const [openSections, setOpenSections] = useState({});
-  
+
   // Move the useEffect inside the component
   useEffect(() => {
     // Check if style already exists
-    if (!document.getElementById('pestel-font-styles')) {
-      const style = document.createElement('style');
-      style.id = 'pestel-font-styles'; 
+    if (!document.getElementById("pestel-font-styles")) {
+      const style = document.createElement("style");
+      style.id = "pestel-font-styles";
       style.innerHTML = fontStyleSheet;
       document.head.appendChild(style);
     }
-    
+
     return () => {
       // Clean up on unmount
-      const styleElement = document.getElementById('pestel-font-styles');
+      const styleElement = document.getElementById("pestel-font-styles");
       if (styleElement) {
         styleElement.parentNode.removeChild(styleElement);
       }
@@ -847,12 +1019,12 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
   // Toggle all sections
   const toggleAllSections = (value) => {
     const newOpenSections = {};
-    Object.keys(openSections).forEach(key => {
+    Object.keys(openSections).forEach((key) => {
       newOpenSections[key] = value;
     });
     setOpenSections(newOpenSections);
   };
-  
+
   if (!hasData) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-6">
@@ -860,70 +1032,100 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
           <CardHeader className="bg-red-50">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              <CardTitle className="text-red-700 font-heading">No Report Data</CardTitle>
+              <CardTitle className="text-red-700 font-heading">
+                No Report Data
+              </CardTitle>
             </div>
-          </CardHeader>
+          </CardHeader>{" "}
           <CardContent className="p-6">
-            <p className="text-gray-700 mb-4 font-body">No analysis data is available. Please submit a form to generate a report.</p>
-            <Button onClick={onBack} className="w-full font-heading font-medium">Return to Form</Button>
+            <p className="text-gray-700 mb-4 font-body">
+              No analysis data is available. Please submit a form to generate a
+              report.
+            </p>
+            <Button
+              onClick={onBack}
+              className="w-full font-heading font-medium text-black"
+            >
+              Return to Form
+            </Button>
           </CardContent>
         </Card>
       </div>
     );
   }
-  
+
   // Render individual dimension report
   const renderDimensionReport = (dimension) => {
     const key = `${dimension.toLowerCase()}_report`;
     const report = individualReports[key];
-    
+
     if (!report) {
       return (
         <div className="flex flex-col items-center justify-center py-8">
           <Card className="max-w-md w-full p-6 text-center">
             <CardContent>
-              <p className="text-gray-500">No data available for {dimension} analysis.</p>
+              <p className="text-gray-500">
+                No data available for {dimension} analysis.
+              </p>
             </CardContent>
           </Card>
         </div>
       );
     }
-    
+
     return (
       <div className="space-y-6">
         {/* Executive Summary */}
         {report.executive_summary && (
-          <ExecutiveSummarySection data={report.executive_summary} dimension={dimension} />
+          <ExecutiveSummarySection
+            data={report.executive_summary}
+            dimension={dimension}
+          />
         )}
-        
+
         {/* Factors Analysis */}
         {report.factors_analysis && (
-          <FactorsAnalysisSection factors={report.factors_analysis} dimension={dimension} />
+          <FactorsAnalysisSection
+            factors={report.factors_analysis}
+            dimension={dimension}
+          />
         )}
-        
+
         {/* Risks & Opportunities */}
         {report.risks_opportunities && (
-          <RisksOpportunitiesSection data={report.risks_opportunities} dimension={dimension} />
+          <RisksOpportunitiesSection
+            data={report.risks_opportunities}
+            dimension={dimension}
+          />
         )}
-        
+
         {/* Regional Dynamics */}
         {report.regional_dynamics && (
-          <RegionalDynamicsSection regions={report.regional_dynamics} dimension={dimension} />
+          <RegionalDynamicsSection
+            regions={report.regional_dynamics}
+            dimension={dimension}
+          />
         )}
-        
+
         {/* Scenario Analysis */}
         {report.scenario_analysis && (
-          <ScenarioAnalysisSection scenarios={report.scenario_analysis} dimension={dimension} />
+          <ScenarioAnalysisSection
+            scenarios={report.scenario_analysis}
+            dimension={dimension}
+          />
         )}
-        
+
         {/* Recommendations */}
         {report.recommendations && (
-          <RecommendationsSection recommendations={report.recommendations} dimension={dimension} />
+          <RecommendationsSection
+            recommendations={report.recommendations}
+            dimension={dimension}
+          />
         )}
       </div>
     );
   };
-  
+
   // Render final report content - still used but not in tabs
   const renderFinalReport = () => {
     if (!finalReport) {
@@ -931,20 +1133,26 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
         <div className="flex flex-col items-center justify-center py-8">
           <Card className="max-w-md w-full p-6 text-center">
             <CardContent>
-              <p className="text-gray-500">No consolidated report available. Please check individual dimension analyses.</p>
+              <p className="text-gray-500">
+                No consolidated report available. Please check individual
+                dimension analyses.
+              </p>
             </CardContent>
           </Card>
         </div>
       );
     }
-    
+
     return (
       <div className="space-y-6">
         {/* Executive Summary */}
         {finalReport.executive_summary && (
-          <ExecutiveSummarySection data={finalReport.executive_summary} dimension="Final" />
+          <ExecutiveSummarySection
+            data={finalReport.executive_summary}
+            dimension="Final"
+          />
         )}
-        
+
         {/* Introduction */}
         {finalReport.introduction && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -959,7 +1167,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
             </CardContent>
           </Card>
         )}
-        
+
         {/* PESTEL Analysis */}
         {finalReport.pestel_analysis && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -984,23 +1192,31 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
                 ].map(({ key, label }) => {
                   const dimConfig = dimensionConfig[label];
                   const value = finalReport.pestel_analysis[key];
-                  
+
                   return (
-                    <Card 
-                      key={key} 
+                    <Card
+                      key={key}
                       className={`border ${dimConfig.borderColor} shadow-sm hover:shadow-md transition-shadow duration-200`}
                     >
                       <CardHeader className={`${dimConfig.bgLight} pb-3`}>
                         <div className="flex items-center gap-2">
                           {dimConfig.icon}
-                          <CardTitle className={`text-lg ${dimConfig.textColor}`}>{label}</CardTitle>
+                          <CardTitle
+                            className={`text-lg ${dimConfig.textColor}`}
+                          >
+                            {label}
+                          </CardTitle>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-3">
                         {value ? (
-                          <div className="text-gray-700">{renderMarkdown(value)}</div>
+                          <div className="text-gray-700">
+                            {renderMarkdown(value)}
+                          </div>
                         ) : (
-                          <p className="text-gray-400 italic">No data available.</p>
+                          <p className="text-gray-400 italic">
+                            No data available.
+                          </p>
                         )}
                       </CardContent>
                     </Card>
@@ -1010,25 +1226,29 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
             </CardContent>
           </Card>
         )}
-        
+
         {/* Strategic Implications */}
         {finalReport.pestel_analysis?.strategic_implications && (
-          <StrategicImplicationsSection implications={finalReport.pestel_analysis.strategic_implications} />
-        )}
-        
-        {/* Opportunities & Threats Matrix */}
-        {finalReport.pestel_analysis?.opportunities_threats_matrix && (
-          <OpportunitiesThreatsMatrixSection matrix={finalReport.pestel_analysis.opportunities_threats_matrix} />
-        )}
-        
-        {/* Strategic Recommendations */}
-        {finalReport.strategic_recommendations && (
-          <RecommendationsSection 
-            recommendations={finalReport.strategic_recommendations} 
-            dimension="Final" 
+          <StrategicImplicationsSection
+            implications={finalReport.pestel_analysis.strategic_implications}
           />
         )}
-        
+
+        {/* Opportunities & Threats Matrix */}
+        {finalReport.pestel_analysis?.opportunities_threats_matrix && (
+          <OpportunitiesThreatsMatrixSection
+            matrix={finalReport.pestel_analysis.opportunities_threats_matrix}
+          />
+        )}
+
+        {/* Strategic Recommendations */}
+        {finalReport.strategic_recommendations && (
+          <RecommendationsSection
+            recommendations={finalReport.strategic_recommendations}
+            dimension="Final"
+          />
+        )}
+
         {/* Conclusion */}
         {finalReport.conclusion && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -1046,18 +1266,21 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
       </div>
     );
   };
-  
+
   // Render unified report
   const renderUnifiedReport = () => {
     if (!report) return null;
-    
+
     return (
       <div className="space-y-6">
         {/* Executive Summary */}
         {report.executive_summary && (
-          <ExecutiveSummarySection data={report.executive_summary} dimension="Final" />
+          <ExecutiveSummarySection
+            data={report.executive_summary}
+            dimension="Final"
+          />
         )}
-        
+
         {/* Introduction */}
         {report.introduction && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -1072,7 +1295,7 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
             </CardContent>
           </Card>
         )}
-        
+
         {/* PESTEL Analysis */}
         {report.pestel_analysis && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -1097,23 +1320,31 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
                 ].map(({ key, label }) => {
                   const dimConfig = dimensionConfig[label];
                   const value = report.pestel_analysis[key];
-                  
+
                   return (
-                    <Card 
-                      key={key} 
+                    <Card
+                      key={key}
                       className={`border ${dimConfig.borderColor} shadow-sm hover:shadow-md transition-shadow duration-200`}
                     >
                       <CardHeader className={`${dimConfig.bgLight} pb-3`}>
                         <div className="flex items-center gap-2">
                           {dimConfig.icon}
-                          <CardTitle className={`text-lg ${dimConfig.textColor}`}>{label}</CardTitle>
+                          <CardTitle
+                            className={`text-lg ${dimConfig.textColor}`}
+                          >
+                            {label}
+                          </CardTitle>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-3">
                         {value ? (
-                          <div className="text-gray-700">{renderMarkdown(value)}</div>
+                          <div className="text-gray-700">
+                            {renderMarkdown(value)}
+                          </div>
                         ) : (
-                          <p className="text-gray-400 italic">No data available.</p>
+                          <p className="text-gray-400 italic">
+                            No data available.
+                          </p>
                         )}
                       </CardContent>
                     </Card>
@@ -1123,25 +1354,29 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
             </CardContent>
           </Card>
         )}
-        
+
         {/* Strategic Implications */}
         {report.strategic_implications && (
-          <StrategicImplicationsSection implications={report.strategic_implications} />
-        )}
-        
-        {/* Opportunities & Threats Matrix */}
-        {report.opportunities_threats_matrix && (
-          <OpportunitiesThreatsMatrixSection matrix={report.opportunities_threats_matrix} />
-        )}
-        
-        {/* Strategic Recommendations */}
-        {report.strategic_recommendations && (
-          <RecommendationsSection 
-            recommendations={report.strategic_recommendations} 
-            dimension="Final" 
+          <StrategicImplicationsSection
+            implications={report.strategic_implications}
           />
         )}
-        
+
+        {/* Opportunities & Threats Matrix */}
+        {report.opportunities_threats_matrix && (
+          <OpportunitiesThreatsMatrixSection
+            matrix={report.opportunities_threats_matrix}
+          />
+        )}
+
+        {/* Strategic Recommendations */}
+        {report.strategic_recommendations && (
+          <RecommendationsSection
+            recommendations={report.strategic_recommendations}
+            dimension="Final"
+          />
+        )}
+
         {/* Conclusion */}
         {report.conclusion && (
           <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-6">
@@ -1159,79 +1394,80 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
       </div>
     );
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-8">
+        {" "}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-          <Button 
-            onClick={onBack} 
-            variant="outline" 
-            className="flex items-center gap-2 mb-4 md:mb-0 font-heading"
+          {" "}
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="flex items-center gap-2 mb-4 md:mb-0 font-heading text-black"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Form</span>
           </Button>
-          
           <div className="flex items-center gap-3">
-            <Button 
-              onClick={() => toggleAllSections(true)} 
-              size="sm" 
-              variant="outline" 
-              className="flex items-center gap-1 font-body"
-            >
-              <Plus className="w-4 h-4" /> Expand All
-            </Button>
-            <Button 
-              onClick={() => toggleAllSections(false)} 
-              size="sm" 
-              variant="outline" 
-              className="flex items-center gap-1 font-body"
-            >
-              <Minus className="w-4 h-4" /> Collapse All
-            </Button>
-            <Button 
-              onClick={() => window.print()} 
-              size="sm" 
-              variant="outline" 
-              className="flex items-center gap-1 font-body"
+            <Button
+              onClick={() => window.print()}
+              size="sm"
+              variant="outline"
+              className="flex items-center gap-1 font-body text-black"
             >
               <ExternalLink className="w-4 h-4" /> Export
             </Button>
           </div>
         </div>
-        
         <div className="bg-gradient-to-r from-indigo-800 to-purple-800 rounded-xl shadow-xl p-8 text-white">
-          <h1 className="text-4xl font-heading font-bold mb-3 tracking-tight">PESTEL Analysis Report</h1>
-          <p className="text-lg opacity-90 font-body">Comprehensive market analysis for strategic decision-making</p>
+          <h1 className="text-4xl font-heading font-bold mb-3 tracking-tight">
+            PESTEL Analysis Report
+          </h1>
+          <p className="text-lg opacity-90 font-body">
+            Comprehensive market analysis for strategic decision-making
+          </p>
           <div className="flex items-center gap-2 mt-4">
             <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
-            <span className="text-sm font-medium font-body">Analysis completed on {new Date().toLocaleDateString()}</span>
+            <span className="text-sm font-medium font-body">
+              Analysis completed on {new Date().toLocaleDateString()}
+            </span>
           </div>
         </div>
       </header>
-      
+
       <main>
-        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs
+          defaultValue={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
           <div className="bg-white rounded-lg shadow-md p-1 mb-6 overflow-x-auto">
             <TabsList className="w-full justify-start">
               {/* Unified tab first if it exists */}
               {report && (
-                <TabsTrigger value="Unified" className="flex items-center gap-1 font-special">
+                <TabsTrigger
+                  value="Unified"
+                  className="flex items-center gap-1 font-special"
+                >
                   <PieChart className="w-4 h-4" />
                   <span>PESTEL Analysis</span>
                 </TabsTrigger>
               )}
-              
+
               {/* Sort and render dimension tabs in PESTEL order */}
               {dimensionKeys
-                .filter(key => key !== "Unified") // Exclude Unified from sorted tabs
-                .map(dimension => {
+                .filter((key) => key !== "Unified") // Exclude Unified from sorted tabs
+                .map((dimension) => {
                   const key = `${dimension.toLowerCase()}_report`;
                   const dimConfig = dimensionConfig[dimension];
-                  
+
                   return (
-                    <TabsTrigger key={key} value={dimension} className="flex items-center gap-1 font-special">
+                    <TabsTrigger
+                      key={key}
+                      value={dimension}
+                      className="flex items-center gap-1 font-special"
+                    >
                       {dimConfig.icon}
                       <span>{dimension}</span>
                     </TabsTrigger>
@@ -1239,37 +1475,41 @@ const ReportDisplay = ({ reportData: rawReportData, onBack }) => {
                 })}
             </TabsList>
           </div>
-          
+
           {/* Content will now be shown based on the tab selection */}
           {report && (
             <TabsContent value="Unified" className="mt-0">
               {renderUnifiedReport()}
             </TabsContent>
           )}
-          
+
           {/* Individual Dimension Tabs */}
-          {Object.entries(individualReports)
-            .map(([key, value]) => {
-              const match = key.match(/^(\w+)_report$/);
-              if (!match) return null;
-              
-              const dimension = match[1].charAt(0).toUpperCase() + match[1].slice(1);
-              if (!dimensionConfig[dimension] || dimension === "Final") return null;
-              
-              return (
-                <TabsContent key={key} value={dimension} className="mt-0">
-                  {renderDimensionReport(dimension)}
-                </TabsContent>
-              );
-            })}
+          {Object.entries(individualReports).map(([key, value]) => {
+            const match = key.match(/^(\w+)_report$/);
+            if (!match) return null;
+
+            const dimension =
+              match[1].charAt(0).toUpperCase() + match[1].slice(1);
+            if (!dimensionConfig[dimension] || dimension === "Final")
+              return null;
+
+            return (
+              <TabsContent key={key} value={dimension} className="mt-0">
+                {renderDimensionReport(dimension)}
+              </TabsContent>
+            );
+          })}
         </Tabs>
-        
+
         {/* If finalReport exists but there's no unified report, render it below */}
         {finalReport && !report && renderFinalReport()}
       </main>
-      
+
       <footer className="text-center text-gray-500 text-sm py-8 font-body">
-        <p>© {new Date().getFullYear()} PESTEL Analysis Tool - All rights reserved</p>
+        <p>
+          © {new Date().getFullYear()} PESTEL Analysis Tool - All rights
+          reserved
+        </p>
       </footer>
     </div>
   );

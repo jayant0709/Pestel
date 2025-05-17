@@ -5,7 +5,8 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/components/content/home";
 import Form from "@/components/content/form";
-import Report from "@/components/content/sample";
+// import Report from "@/components/content/sample";
+import Report from "@/components/content/report";
 import Combined from "@/components/content/Combined";
 import {
   FaHome,

@@ -132,8 +132,8 @@ const Form = () => {
         email: session.user.email,
       };
 
-      // Send to Next.js API endpoint to save in MongoDB
-      const response = await fetch("/api/analysis", {
+      // Step 1: Save form data to Analysis collection
+      const analysisResponse = await fetch("/api/analysis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,43 +141,83 @@ const Form = () => {
         body: JSON.stringify(submissionData),
       });
 
-      if (!response.ok) {
-        throw new Error(`API returned status code ${response.status}`);
+      if (!analysisResponse.ok) {
+        throw new Error(
+          `Analysis API returned status code ${analysisResponse.status}`
+        );
       }
 
-      const data = await response.json();
+      const analysisData = await analysisResponse.json();
 
-      if (data.success) {
-        // Keep the Flask response for report generation if needed
-        try {
-          // Additionally send to Flask backend for analysis report
-          const flaskResponse = await fetch(
-            "http://127.0.0.1:8080/submit-analysis",
-            {
+      // Step 2: Get report from Flask backend
+      try {
+        const flaskResponse = await fetch(
+          "http://127.0.0.1:8080/submit-analysis",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(submissionData),
+          }
+        );
+
+        if (flaskResponse.ok) {
+          const reportData = await flaskResponse.json(); // Step 3: Save the report data to MongoDB with reference to the analysis
+          if (reportData && analysisData.success) {
+            // Ensure all required properties exist
+            const dataToSave = {
+              analysis_id: analysisData.data._id,
+              individual_reports: reportData.individual_reports || {},
+              final_report: reportData.final_report || {},
+              report: reportData.report || {},
+              success:
+                reportData.success !== undefined ? reportData.success : true,
+              timestamp: reportData.timestamp || new Date().toISOString(),
+            };
+
+            console.log(
+              "Saving report data:",
+              JSON.stringify(dataToSave, null, 2)
+            );
+
+            const reportSaveResponse = await fetch("/api/reports", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(submissionData),
-            }
-          );
+              body: JSON.stringify(dataToSave),
+            });
 
-          if (flaskResponse.ok) {
-            const reportData = await flaskResponse.json();
+            if (reportSaveResponse.ok) {
+              const savedReport = await reportSaveResponse.json();
+              console.log("Report saved successfully:", savedReport);
+              // Display the report
+              setReportData(reportData);
+              setShowReport(true);
+            } else {
+              const errorData = await reportSaveResponse.json();
+              console.error("Failed to save report data:", errorData);
+              alert(
+                "Warning: Your report data couldn't be saved to the database."
+              );
+              // Still show the report even if saving to DB failed
+              setReportData(reportData);
+              setShowReport(true);
+            }
+          } else {
             setReportData(reportData);
             setShowReport(true);
-          } else {
-            // If Flask fails, we can still show a success message for DB storage
-            alert("Form saved successfully, but report generation failed.");
           }
-        } catch (flaskError) {
-          console.error("Flask API Error:", flaskError);
-          alert(
-            "Your data was saved successfully, but we couldn't generate a report at this time."
-          );
+        } else {
+          // If Flask fails, we can still show a success message for DB storage
+          alert("Form saved successfully, but report generation failed.");
         }
-      } else {
-        alert("Error saving analysis: " + (data.error || "Unknown error"));
+      } catch (flaskError) {
+        console.error("Flask API Error:", flaskError);
+        alert(
+          "Your data was saved successfully, but we couldn't generate a report at this time."
+        );
       }
     } catch (error) {
       console.error("Error:", error);
