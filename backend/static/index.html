@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>News Bulletin</title>
+</head>
+<body>
+  <h1>News Bulletin</h1>
+  <button onclick="refreshNews()">🔄 Refresh News</button>
+  <div id="news"></div>
+
+  <script>
+    async function refreshNews() {
+      const res = await fetch("/refresh-news");
+      const data = await res.json();
+
+      const container = document.getElementById("news");
+      container.innerHTML = "";
+
+      for (const factor in data) {
+        const section = document.createElement("div");
+        section.innerHTML = `<h3>${factor.toUpperCase()}</h3><ul>` +
+          data[factor].map(a => `<li><a href="${a.url}" target="_blank">${a.title}</a></li>`).join("") +
+          `</ul>`;
+        container.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>
