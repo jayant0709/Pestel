@@ -73,9 +73,7 @@ export async function POST(req) {
       } else if (typeof data.final_report === "object") {
         sanitizedFinalReport = data.final_report;
       }
-    }
-
-    // Convert report from string to object if needed
+    }    // Convert report from string to object if needed
     let sanitizedReport = {};
     if (data.report) {
       if (typeof data.report === "string") {
@@ -89,6 +87,20 @@ export async function POST(req) {
       }
     }
 
+    // Convert news from string to object if needed
+    let sanitizedNews = {};
+    if (data.news) {
+      if (typeof data.news === "string") {
+        try {
+          sanitizedNews = JSON.parse(data.news);
+        } catch (e) {
+          console.warn("Failed to parse news string:", e);
+        }
+      } else if (typeof data.news === "object") {
+        sanitizedNews = data.news;
+      }
+    }
+
     // Create the report with the sanitized data structure
     const report = await Report.create({
       email: session.user.email,
@@ -96,6 +108,7 @@ export async function POST(req) {
       individual_reports: sanitizedIndividualReports,
       final_report: sanitizedFinalReport,
       report: sanitizedReport,
+      news: sanitizedNews,
       success: data.success !== undefined ? data.success : true,
       timestamp: data.timestamp || new Date(),
     });

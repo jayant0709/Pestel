@@ -39,6 +39,14 @@ const reportSchema = new mongoose.Schema({
     environmental_report: reportSectionSchema,
     legal_report: reportSectionSchema
   },
+  news: {
+    political_news: [{ title: String, url: String }],
+    economic_news: [{ title: String, url: String }],
+    social_news: [{ title: String, url: String }],
+    technological_news: [{ title: String, url: String }],
+    environmental_news: [{ title: String, url: String }],
+    legal_news: [{ title: String, url: String }]
+  },
   final_report: finalReportSchema,
   report: finalReportSchema,
   success: { type: Boolean, default: true },

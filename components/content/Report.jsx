@@ -72,13 +72,12 @@ const Report = ({ reportData, onBack }) => {
       console.log("Processing report (full structure):", report);
 
       // First, check if the report contains nested data in a 'data' property (common API response structure)
-      const reportData = report.data ? report.data : report;
-
-      // IMPORTANT: Always ensure we have proper structure, even if fields are empty
+      const reportData = report.data ? report.data : report; // IMPORTANT: Always ensure we have proper structure, even if fields are empty
       const processedData = {
         individual_reports: reportData.individual_reports || {},
         report: reportData.report || {},
         final_report: reportData.final_report || {},
+        news: reportData.news || {},
         success: reportData.success !== undefined ? reportData.success : true,
         timestamp:
           reportData.timestamp ||
@@ -93,6 +92,7 @@ const Report = ({ reportData, onBack }) => {
       );
       console.log("report:", JSON.stringify(reportData.report));
       console.log("final_report:", JSON.stringify(reportData.final_report));
+      console.log("news:", JSON.stringify(reportData.news));
 
       // Important debugging to see what data we're actually working with
       console.log("Processed data for display:", processedData);
@@ -262,7 +262,9 @@ const Report = ({ reportData, onBack }) => {
             <SelectContent>
               {savedReports.map((report) => (
                 <SelectItem key={report._id} value={report._id}>
-                  {report.analysis_id?.business_name ? report.analysis_id.business_name : "Unnamed Analysis"}
+                  {report.analysis_id?.business_name
+                    ? report.analysis_id.business_name
+                    : "Unnamed Analysis"}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -277,13 +279,13 @@ const Report = ({ reportData, onBack }) => {
             </div>
           )}
         </CardContent>
-      </Card>
-
+      </Card>{" "}
       {/* Only try to render the ReportDisplay component if display data exists */}
       {displayData &&
       (Object.keys(displayData.individual_reports || {}).length > 0 ||
         Object.keys(displayData.report || {}).length > 0 ||
-        Object.keys(displayData.final_report || {}).length > 0) ? (
+        Object.keys(displayData.final_report || {}).length > 0 ||
+        Object.keys(displayData.news || {}).length > 0) ? (
         <>
           <ReportDisplay reportData={displayData} showReturnButton={false} />
         </>

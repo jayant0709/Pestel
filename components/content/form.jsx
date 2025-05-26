@@ -171,6 +171,7 @@ const Form = () => {
               individual_reports: reportData.individual_reports || {},
               final_report: reportData.final_report || {},
               report: reportData.report || {},
+              news: reportData.news || {},
               success:
                 reportData.success !== undefined ? reportData.success : true,
               timestamp: reportData.timestamp || new Date().toISOString(),
