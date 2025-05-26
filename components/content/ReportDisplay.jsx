@@ -15,6 +15,8 @@ import {
   FileText,
   Globe,
   PieChart,
+  ExternalLink,
+  Scale,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -283,6 +285,7 @@ const parseReportData = (rawData) => {
   const reportStructure = {
     finalReport: null,
     individualReports: {},
+    news: {},
     hasData: false,
   };
 
@@ -331,6 +334,11 @@ const parseReportData = (rawData) => {
       reportStructure.report = rawData.report;
       reportStructure.hasData = true;
     }
+  }
+
+  // Check for news
+  if (rawData.news && typeof rawData.news === "object") {
+    reportStructure.news = rawData.news;
   }
 
   return reportStructure;
@@ -482,7 +490,9 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
           <div>
             <div className="flex items-center gap-2.5 mb-5">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              <h3 className="text-xl font-bold text-red-700 font-heading">Risks</h3>
+              <h3 className="text-xl font-bold text-red-700 font-heading">
+                Risks
+              </h3>
             </div>
 
             {risks.length > 0 ? (
@@ -501,7 +511,9 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="pt-0 pb-4">
-                        <p className="text-gray-700 mb-3 font-body">{risk.description}</p>
+                        <p className="text-gray-700 mb-3 font-body">
+                          {risk.description}
+                        </p>
                         {risk.impact_level && (
                           <div className="flex items-center">
                             <span className="text-sm text-gray-600 mr-2 font-special">
@@ -520,7 +532,9 @@ const RisksOpportunitiesSection = ({ data, dimension }) => {
                 })}
               </div>
             ) : (
-              <p className="text-gray-500 italic font-body">No risks identified.</p>
+              <p className="text-gray-500 italic font-body">
+                No risks identified.
+              </p>
             )}
           </div>
 
@@ -945,9 +959,16 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
 
   return (
     <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
+      {" "}
       <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6">
         <div className="flex items-center gap-2">
-          <Scale className="w-6 h-6" />
+          <Image
+            src="/icons8-globe-50.png"
+            alt="Globe Icon"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
           <CardTitle>Opportunities & Threats Matrix</CardTitle>
         </div>
         <CardDescription className="text-white opacity-90">
@@ -1017,11 +1038,80 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
   );
 };
 
+// Component for News Links
+const NewsLinksSection = ({ newsItems, dimension }) => {
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+
+  if (!newsItems || !Array.isArray(newsItems) || newsItems.length === 0) {
+    return null;
+  }
+
+  return (
+    <Card
+      className={`shadow-lg border ${config.borderColor} overflow-hidden mb-8 shadow-card`}
+    >
+      <CardHeader
+        className={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} text-white p-6`}
+      >
+        {" "}
+        <div className="flex items-center gap-3">
+          <Image
+            src="/internet.png"
+            alt={`${dimension} News`}
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />{" "}
+          <CardTitle className="font-heading tracking-tight text-xl font-bold">
+            Sources Used
+          </CardTitle>
+        </div>
+        <CardDescription className="text-white opacity-95 font-body mt-1">
+          Reference materials used for {dimension.toLowerCase()} factor analysis
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 gap-3">
+          {" "}
+          {newsItems.map((item, index) => (
+            <a
+              key={index}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center p-3 rounded-lg border ${config.borderColor} hover:bg-${config.color}-50 transition-colors`}
+            >
+              {" "}
+              <div
+                className={`flex items-center justify-center min-w-6 h-6 rounded-full bg-${config.color}-500 mr-3 text-blue text-xs `}
+                style={{
+                  minWidth: "20px",
+                  textShadow: "0px 0px 2px rgba(0,0,0,0.5)",
+                }}
+              >
+                {index + 1}.
+              </div>
+              <span className="text-blue-600 font-medium flex items-center">
+                {item.title}
+                <ExternalLink className="ml-2 w-4 h-4 text-blue-600" />
+              </span>
+            </a>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 // Main ReportDisplay Component
-const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = true }) => {
+const ReportDisplay = ({
+  reportData: rawReportData,
+  onBack,
+  showReturnButton = true,
+}) => {
   // Define the font style sheet inside the component
   const fontStyleSheet = `
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700,800&family=Sora:wght@400;500;600;700&display=swap');
 
     :root {
       --font-heading: 'Sora', sans-serif;
@@ -1079,9 +1169,8 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
   `;
-
   // Parse the report data
-  const { finalReport, individualReports, report, hasData } =
+  const { finalReport, individualReports, report, news, hasData } =
     parseReportData(rawReportData);
 
   // Define PESTEL order for proper sequence
@@ -1175,6 +1264,9 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
   const renderDimensionReport = (dimension) => {
     const key = `${dimension.toLowerCase()}_report`;
     const report = individualReports[key];
+    const dimensionNewsKey = `${dimension.toLowerCase()}_news`;
+    const dimensionNews =
+      news && news[dimensionNewsKey] ? news[dimensionNewsKey] : [];
 
     if (!report) {
       return (
@@ -1199,7 +1291,6 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
             dimension={dimension}
           />
         )}
-
         {/* Factors Analysis */}
         {report.factors_analysis && (
           <FactorsAnalysisSection
@@ -1207,7 +1298,6 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
             dimension={dimension}
           />
         )}
-
         {/* Risks & Opportunities */}
         {report.risks_opportunities && (
           <RisksOpportunitiesSection
@@ -1215,15 +1305,13 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
             dimension={dimension}
           />
         )}
-
         {/* Regional Dynamics */}
         {report.regional_dynamics && (
           <RegionalDynamicsSection
             regions={report.regional_dynamics}
             dimension={dimension}
           />
-        )}
-
+        )}{" "}
         {/* Scenario Analysis */}
         {report.scenario_analysis && (
           <ScenarioAnalysisSection
@@ -1231,13 +1319,16 @@ const ReportDisplay = ({ reportData: rawReportData, onBack, showReturnButton = t
             dimension={dimension}
           />
         )}
-
         {/* Recommendations */}
         {report.recommendations && (
           <RecommendationsSection
             recommendations={report.recommendations}
             dimension={dimension}
           />
+        )}
+        {/* News Links */}
+        {dimensionNews.length > 0 && (
+          <NewsLinksSection newsItems={dimensionNews} dimension={dimension} />
         )}
       </div>
     );

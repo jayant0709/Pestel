@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import Home from "@/components/content/home";
 import Form from "@/components/content/form";
 // import Report from "@/components/content/sample";
-import Report from "@/components/content/report";
+import Report from "@/components/content/Report";
 import {
   FaHome,
   FaInfoCircle,
@@ -25,8 +25,9 @@ const Dashboard = () => {
       const contentParam = urlParams.get("content");
       return contentParam || "home";
     }
-    return "home";  });
-  
+    return "home";
+  });
+
   // Update URL when activeContent changes
   useEffect(() => {
     if (typeof window !== "undefined") {

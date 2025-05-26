@@ -396,7 +396,10 @@ const Form = () => {
             <div className="grid gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.keys(formData.political_factors).map((key) => (
-                  <div key={key} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors">
+                  <div
+                    key={key}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors"
+                  >
                     <Checkbox
                       id={`political_${key}`}
                       name={key}
@@ -414,7 +417,10 @@ const Form = () => {
                       }
                       className="data-[state=checked]:bg-indigo-500"
                     />
-                    <Label htmlFor={`political_${key}`} className="capitalize text-gray-700">
+                    <Label
+                      htmlFor={`political_${key}`}
+                      className="capitalize text-gray-700"
+                    >
                       {key.replace(/_/g, " ")}
                     </Label>
                   </div>
