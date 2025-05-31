@@ -279,28 +279,25 @@ const renderMarkdown = (content) => {
 
 // Helper: Get a clean report object from raw data
 const parseReportData = (rawData) => {
-  if (!rawData || typeof rawData !== "object") return {};
+  if (!rawData || typeof rawData !== "object") return { hasData: false };
 
   // Create a structured data object to hold all our report data
   const reportStructure = {
     finalReport: null,
     individualReports: {},
     news: {},
+    pestelScores: {}, // Add pestel_scores to the structure
     hasData: false,
   };
 
   // Check for final_report
   if (rawData.final_report) {
-    try {
-      reportStructure.finalReport =
-        typeof rawData.final_report === "object"
-          ? rawData.final_report
-          : JSON.parse(rawData.final_report);
-      reportStructure.hasData = true;
-    } catch (e) {
-      reportStructure.finalReport = rawData.final_report;
-      reportStructure.hasData = true;
-    }
+    // Handle nested or direct final_report structure
+    reportStructure.finalReport =
+      typeof rawData.final_report === "string"
+        ? JSON.parse(rawData.final_report)
+        : rawData.final_report;
+    reportStructure.hasData = true;
   }
 
   // Check for individual_reports
@@ -308,37 +305,27 @@ const parseReportData = (rawData) => {
     rawData.individual_reports &&
     typeof rawData.individual_reports === "object"
   ) {
-    Object.entries(rawData.individual_reports).forEach(([key, value]) => {
-      if (value) {
-        try {
-          reportStructure.individualReports[key] =
-            typeof value === "object" ? value : JSON.parse(value);
-          reportStructure.hasData = true;
-        } catch (e) {
-          reportStructure.individualReports[key] = value;
-          reportStructure.hasData = true;
-        }
-      }
-    });
+    reportStructure.individualReports = rawData.individual_reports;
+    reportStructure.hasData = true;
   }
 
   // Check for unified report
   if (rawData.report) {
-    try {
-      reportStructure.report =
-        typeof rawData.report === "object"
-          ? rawData.report
-          : JSON.parse(rawData.report);
-      reportStructure.hasData = true;
-    } catch (e) {
-      reportStructure.report = rawData.report;
-      reportStructure.hasData = true;
-    }
+    reportStructure.report =
+      typeof rawData.report === "string"
+        ? JSON.parse(rawData.report)
+        : rawData.report;
+    reportStructure.hasData = true;
   }
 
   // Check for news
   if (rawData.news && typeof rawData.news === "object") {
     reportStructure.news = rawData.news;
+  }
+
+  // Check for pestel_scores
+  if (rawData.pestel_scores && typeof rawData.pestel_scores === "object") {
+    reportStructure.pestelScores = rawData.pestel_scores;
   }
 
   return reportStructure;
@@ -884,6 +871,16 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
   );
 };
 
+// PESTEL dimension order for consistent sorting
+const pestelOrder = [
+  "Political",
+  "Economic",
+  "Social",
+  "Technological",
+  "Environmental",
+  "Legal",
+];
+
 // Component for Strategic Implications
 const StrategicImplicationsSection = ({ implications }) => {
   if (
@@ -1103,6 +1100,85 @@ const NewsLinksSection = ({ newsItems, dimension }) => {
   );
 };
 
+// Component for showing score cards
+const ScoreDisplay = ({ scores, dimension }) => {
+  if (
+    !scores ||
+    scores.similarity_score === undefined ||
+    scores.impact_score === undefined
+  ) {
+    return null;
+  }
+
+  const config = dimensionConfig[dimension] || dimensionConfig.Final;
+
+  return (
+    <div className="mb-6 space-y-4">
+      <div className="flex flex-wrap gap-4">
+        <Card
+          className={`border ${config.borderColor} shadow-sm flex-1 min-w-[150px]`}
+        >
+          <CardHeader className={`${config.bgLight} py-3 px-4`}>
+            <CardTitle className="text-sm font-medium">
+              Similarity Score
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <Progress
+                value={scores.similarity_score}
+                className="h-2.5"
+                indicatorClassName={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
+              />
+              <span
+                className={`ml-4 text-xl font-semibold ${config.textColor}`}
+              >
+                {scores.similarity_score}%
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card
+          className={`border ${config.borderColor} shadow-sm flex-1 min-w-[150px]`}
+        >
+          <CardHeader className={`${config.bgLight} py-3 px-4`}>
+            <CardTitle className="text-sm font-medium">Impact Score</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <Progress
+                value={scores.impact_score}
+                className="h-2.5"
+                indicatorClassName={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
+              />
+              <span
+                className={`ml-4 text-xl font-semibold ${config.textColor}`}
+              >
+                {scores.impact_score}%
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Justification Card */}
+      {scores.justification && (
+        <Card className={`border ${config.borderColor} shadow-sm`}>
+          <CardHeader className={`${config.bgLight} py-3 px-4`}>
+            <CardTitle className="text-sm font-medium">
+              Analysis Justification
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <p className="text-gray-700 text-sm">{scores.justification}</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
 // Main ReportDisplay Component
 const ReportDisplay = ({
   reportData: rawReportData,
@@ -1168,20 +1244,15 @@ const ReportDisplay = ({
       transform: translateY(-2px);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-  `;
-  // Parse the report data
-  const { finalReport, individualReports, report, news, hasData } =
-    parseReportData(rawReportData);
-
-  // Define PESTEL order for proper sequence
-  const pestelOrder = [
-    "Political",
-    "Economic",
-    "Social",
-    "Technological",
-    "Environmental",
-    "Legal",
-  ];
+  `; // Parse the report data
+  const {
+    finalReport,
+    individualReports,
+    report,
+    news,
+    pestelScores,
+    hasData,
+  } = parseReportData(rawReportData);
 
   // Get dimension keys for tabs - exclude Final and sort by PESTEL order
   const dimensionKeys = Object.keys(dimensionConfig)
@@ -1268,6 +1339,10 @@ const ReportDisplay = ({
     const dimensionNews =
       news && news[dimensionNewsKey] ? news[dimensionNewsKey] : [];
 
+    // Get the scores for this dimension
+    const dimensionScores =
+      pestelScores && pestelScores[dimension.toLowerCase()];
+
     if (!report) {
       return (
         <div className="flex flex-col items-center justify-center py-8">
@@ -1284,6 +1359,10 @@ const ReportDisplay = ({
 
     return (
       <div className="space-y-6">
+        {/* PESTEL Scores */}
+        {dimensionScores && (
+          <ScoreDisplay scores={dimensionScores} dimension={dimension} />
+        )}
         {/* Executive Summary */}
         {report.executive_summary && (
           <ExecutiveSummarySection
@@ -1474,13 +1553,87 @@ const ReportDisplay = ({
       </div>
     );
   };
-
   // Render unified report
   const renderUnifiedReport = () => {
     if (!report) return null;
 
     return (
       <div className="space-y-6">
+        {/* PESTEL Score Summary - Show all scores in a grid */}
+        {pestelScores && Object.keys(pestelScores).length > 0 && (
+          <Card className="shadow-lg border border-indigo-200 overflow-hidden mb-8">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6">
+              <div className="flex items-center gap-3">
+                <PieChart className="w-6 h-6" />
+                <CardTitle className="font-heading tracking-tight text-xl font-bold">
+                  PESTEL Score Analysis
+                </CardTitle>
+              </div>
+              <CardDescription className="text-white opacity-95 font-body mt-1">
+                Similarity and impact scores across all dimensions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {pestelOrder.map((dimension) => {
+                  const dimConfig = dimensionConfig[dimension];
+                  const scores = pestelScores[dimension.toLowerCase()];
+
+                  if (!scores) return null;
+
+                  return (
+                    <Card
+                      key={dimension}
+                      className={`border ${dimConfig.borderColor} shadow-sm`}
+                    >
+                      <CardHeader className={`${dimConfig.bgLight} py-3 px-4`}>
+                        <div className="flex items-center gap-2">
+                          {dimConfig.icon}
+                          <CardTitle
+                            className={`text-base ${dimConfig.textColor}`}
+                          >
+                            {dimension}
+                          </CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div>
+                            <div className="flex justify-between mb-1 text-sm">
+                              <span>Similarity:</span>
+                              <span className="font-semibold">
+                                {scores.similarity_score}%
+                              </span>
+                            </div>
+                            <Progress
+                              value={scores.similarity_score}
+                              className="h-2"
+                              indicatorClassName={`bg-gradient-to-r ${dimConfig.gradientFrom} ${dimConfig.gradientTo}`}
+                            />
+                          </div>
+                          <div>
+                            <div className="flex justify-between mb-1 text-sm">
+                              <span>Impact:</span>
+                              <span className="font-semibold">
+                                {scores.impact_score}%
+                              </span>
+                            </div>
+                            <Progress
+                              value={scores.impact_score}
+                              className="h-2"
+                              indicatorClassName={`bg-gradient-to-r ${dimConfig.gradientFrom} ${dimConfig.gradientTo}`}
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Executive Summary */}
         {report.executive_summary && (
           <ExecutiveSummarySection
@@ -1564,16 +1717,48 @@ const ReportDisplay = ({
         )}
 
         {/* Strategic Implications */}
-        {report.strategic_implications && (
+        {report.pestel_analysis?.strategic_implications && (
           <StrategicImplicationsSection
-            implications={report.strategic_implications}
+            implications={report.pestel_analysis.strategic_implications}
           />
         )}
 
         {/* Opportunities & Threats Matrix */}
-        {report.opportunities_threats_matrix && (
+        {report.pestel_analysis?.opportunities_threats_matrix && (
           <OpportunitiesThreatsMatrixSection
-            matrix={report.opportunities_threats_matrix}
+            matrix={report.pestel_analysis.opportunities_threats_matrix}
+          />
+        )}
+
+        {/* Factors Analysis - common type */}
+        {report.factors_analysis && (
+          <FactorsAnalysisSection
+            factors={report.factors_analysis}
+            dimension="Final"
+          />
+        )}
+
+        {/* Risks & Opportunities */}
+        {report.risks_opportunities && (
+          <RisksOpportunitiesSection
+            data={report.risks_opportunities}
+            dimension="Final"
+          />
+        )}
+
+        {/* Regional Dynamics */}
+        {report.regional_dynamics && (
+          <RegionalDynamicsSection
+            regions={report.regional_dynamics}
+            dimension="Final"
+          />
+        )}
+
+        {/* Scenario Analysis */}
+        {report.scenario_analysis && (
+          <ScenarioAnalysisSection
+            scenarios={report.scenario_analysis}
+            dimension="Final"
           />
         )}
 
@@ -1581,6 +1766,14 @@ const ReportDisplay = ({
         {report.strategic_recommendations && (
           <RecommendationsSection
             recommendations={report.strategic_recommendations}
+            dimension="Final"
+          />
+        )}
+
+        {/* Regular Recommendations */}
+        {report.recommendations && (
+          <RecommendationsSection
+            recommendations={report.recommendations}
             dimension="Final"
           />
         )}
