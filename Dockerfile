@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build the Next.js application with ESLint and TypeScript checks disabled
-RUN DISABLE_ESLINT_PLUGIN=true NEXT_IGNORE_TYPE_ERROR=true npm run build
+RUN DISABLE_ESLINT_PLUGIN=true NEXT_TYPESCRIPT_COMPILE_BLOB=true npm run build
 
 # Stage 2: Production image
 FROM node:20-alpine AS runner

@@ -152,7 +152,7 @@ const Form = () => {
       // Step 2: Get report from Flask backend
       try {
         const flaskResponse = await fetch(
-          "http://127.0.0.1:8080/submit-analysis",
+          "https://pestel-backend-362387414228.asia-south1.run.app/submit-analysis",
           {
             method: "POST",
             headers: {
