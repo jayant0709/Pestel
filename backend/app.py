@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from all_agents import build_pestel_graph
 from tavily_functions import make_serializable
+from score import calculate_scores_direct  # Import the new scoring function
 
 import json
 import datetime
@@ -72,12 +73,12 @@ def submit_analysis():
         
         # Run the PESTEL analysis workflow
         print("Starting PESTEL analysis workflow for submitted form data...")
-        # result = pestel_graph.invoke(initial_state)
+        result = pestel_graph.invoke(initial_state)
 
         ### TESTING ###
-        output_filename = "../test/output_20250516_161305.json"
-        with open(output_filename, 'r', encoding='utf-8') as f:
-            result = json.loads(f.read())
+        # output_filename = "../test/output_20250516_161305.json"
+        # with open(output_filename, 'r', encoding='utf-8') as f:
+        #     result = json.loads(f.read())
         
         # Prepare serializable result
         serializable_result = make_serializable(result)
@@ -88,9 +89,9 @@ def submit_analysis():
         #     response_data = file_content
         
         # Save the results to output.json for debugging/record keeping
-        output_filename = f"../test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(output_filename, 'w', encoding='utf-8') as f:
-            json.dump(serializable_result, f, indent=4)
+        # output_filename = f"../test/output_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        # with open(output_filename, 'w', encoding='utf-8') as f:
+        #     json.dump(serializable_result, f, indent=4)
         
         # Parse all reports from JSON strings to Python dictionaries
         parsed_reports = {}
@@ -120,6 +121,15 @@ def submit_analysis():
         else:
             parsed_final_report = final_report
         
+        # Calculate PESTEL similarity and impact scores
+        print("Starting PESTEL scoring calculation...")
+        try:
+            pestel_scores = calculate_scores_direct(processed_form_data, parsed_reports)
+            print(f"PESTEL scoring completed successfully. Calculated scores for {len(pestel_scores)} factors.")
+        except Exception as e:
+            print(f"Error calculating PESTEL scores: {str(e)}")
+            pestel_scores = {}
+        
         # Extract news data from each factor's data arrays
         news_data = {}
         factor_data_keys = [
@@ -139,15 +149,24 @@ def submit_analysis():
                         'url': item['url']
                     })
         
+
+        # with open("backend_response.json", 'r', encoding='utf-8') as f:
+        #     response_data = json.loads(f.read())
+
         # Structure the response according to the expected format
         response_data = {
             'success': True,
             'individual_reports': parsed_reports,
             'report': parsed_final_report,
             'news': news_data,
+            'pestel_scores': pestel_scores,
             'timestamp': datetime.datetime.now().isoformat()
         }
         
+        ### TESTING ###
+        # with open("backend_response.json", 'w', encoding='utf-8') as f:
+        #     json.dump(response_data, f, indent=4)
+
         print(f"PESTEL analysis complete!")
         
         # print(response_data)

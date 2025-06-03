@@ -251,7 +251,7 @@ const renderMarkdown = (content) => {
       );
     if (block.startsWith("- "))
       return (
-        <ul key={i} className="list-disc ml-6 mb-5 space-y-2 font-body">
+        <ul key={i} className="list-disc ml-6 mb-5 space-y-2 tinos-regular">
           {block.split("\n").map((li, j) => (
             <li key={j} className="text-gray-700">
               {li.replace("- ", "")}
@@ -261,7 +261,7 @@ const renderMarkdown = (content) => {
       );
     if (block.match(/^\d+\. /))
       return (
-        <ol key={i} className="list-decimal ml-6 mb-5 space-y-2 font-body">
+        <ol key={i} className="list-decimal ml-6 mb-5 space-y-2 tinos-regular">
           {block.split("\n").map((li, j) => (
             <li key={j} className="text-gray-700">
               {li.replace(/^\d+\. /, "")}
@@ -270,7 +270,7 @@ const renderMarkdown = (content) => {
         </ol>
       );
     return (
-      <p key={i} className="mb-5 text-gray-700 leading-relaxed font-body">
+      <p key={i} className="mb-5 text-gray-700 leading-relaxed tinos-regular">
         {block}
       </p>
     );
@@ -293,10 +293,24 @@ const parseReportData = (rawData) => {
   // Check for final_report
   if (rawData.final_report) {
     // Handle nested or direct final_report structure
-    reportStructure.finalReport =
+    const finalReportData =
       typeof rawData.final_report === "string"
         ? JSON.parse(rawData.final_report)
         : rawData.final_report;
+
+    // Ensure pestel_analysis is properly structured if it exists
+    if (finalReportData.pestel_analysis) {
+      // Convert to object if it's a string
+      if (typeof finalReportData.pestel_analysis === "string") {
+        try {
+          finalReportData.pestel_analysis = JSON.parse(finalReportData.pestel_analysis);
+        } catch (e) {
+          console.error("Error parsing pestel_analysis string:", e);
+        }
+      }
+    }
+
+    reportStructure.finalReport = finalReportData;
     reportStructure.hasData = true;
   }
 
@@ -772,6 +786,9 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
               recommendation.recommendation_title ||
               recommendation.recommendation ||
               "Unnamed Recommendation";
+            
+            // Generate a number for recommendations that don't have one
+            const recommendationNumber = recommendation.recommendation_number || (index + 1);
 
             return (
               <Card
@@ -780,14 +797,20 @@ const RecommendationsSection = ({ recommendations, dimension }) => {
               >
                 <CardHeader className={`${config.bgLight} pb-3`}>
                   <div className="flex items-center gap-3">
-                    {recommendation.recommendation_number && (
-                      <div
-                        className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
-                      >
-                        {recommendation.recommendation_number}
-                      </div>
-                    )}
-                    <CardTitle className="text-lg">{title}</CardTitle>
+                    <div
+                      className={`h-12 w-12 rounded-full flex items-center justify-center text-white font-bold 
+                      bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo} 
+                      shadow-md shadow-${config.color}-200/50
+                      transform transition-transform duration-200 hover:scale-105
+                      border-2 border-white`}
+                      style={{
+                        fontSize: '1.1rem',
+                        textShadow: '0px 1px 2px rgba(0,0,0,0.2)'
+                      }}
+                    >
+                      {recommendationNumber}
+                    </div>
+                    <CardTitle className="text-lg font-heading text-gray-800">{title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4">
@@ -960,7 +983,7 @@ const OpportunitiesThreatsMatrixSection = ({ matrix }) => {
       <CardHeader className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6">
         <div className="flex items-center gap-2">
           <Image
-            src="/icons8-globe-50.png"
+            src="/opportunities_and_threat.png"
             alt="Globe Icon"
             width={24}
             height={24}
@@ -1113,68 +1136,96 @@ const ScoreDisplay = ({ scores, dimension }) => {
   const config = dimensionConfig[dimension] || dimensionConfig.Final;
 
   return (
-    <div className="mb-6 space-y-4">
-      <div className="flex flex-wrap gap-4">
-        <Card
-          className={`border ${config.borderColor} shadow-sm flex-1 min-w-[150px]`}
-        >
-          <CardHeader className={`${config.bgLight} py-3 px-4`}>
-            <CardTitle className="text-sm font-medium">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      {/* Similarity Score Card */}
+      <div className={`p-5 rounded-xl bg-gradient-to-br from-white to-${config.color}-50 border ${config.borderColor} shadow-md hover:shadow-lg transition-all duration-300`}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-full ${config.bgLight}`}>
+              <Image
+                src="/similarity_score.png"
+                alt="Similarity Score"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+            </div>
+            <h3 className={`text-lg font-semibold ${config.textColor} font-heading`}>
               Similarity Score
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <Progress
-                value={scores.similarity_score}
-                className="h-2.5"
-                indicatorClassName={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
-              />
-              <span
-                className={`ml-4 text-xl font-semibold ${config.textColor}`}
-              >
-                {scores.similarity_score}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card
-          className={`border ${config.borderColor} shadow-sm flex-1 min-w-[150px]`}
-        >
-          <CardHeader className={`${config.bgLight} py-3 px-4`}>
-            <CardTitle className="text-sm font-medium">Impact Score</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <Progress
-                value={scores.impact_score}
-                className="h-2.5"
-                indicatorClassName={`bg-gradient-to-r ${config.gradientFrom} ${config.gradientTo}`}
-              />
-              <span
-                className={`ml-4 text-xl font-semibold ${config.textColor}`}
-              >
-                {scores.impact_score}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+            </h3>
+          </div>
+          <div className={`${config.textColor} font-heading`}>
+            <span className="text-xl font-bold">{scores.similarity_score}</span>
+            <span className="text-sm font-normal text-gray-500">/100</span>
+          </div>
+        </div>
+        
+        <div className="relative pt-1 pb-2 mt-3">
+          <div className="flex justify-between mb-1 text-xs">
+            <span className="text-gray-500">Low</span>
+            <span className="text-gray-500">High</span>
+          </div>
+          <div className="h-2.5 w-full bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+            <div 
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${scores.similarity_score}%`,
+                background: `linear-gradient(to right, var(--${config.color}-600), var(--${config.color}-800))`,
+                boxShadow: `0 0 8px rgba(var(--${config.color}-500-rgb), 0.5)`
+              }}
+            ></div>
+          </div>
+        </div>
+        
+        <p className="mt-3 text-gray-600 text-xs tinos-regular">
+          Measures alignment with your business context
+        </p>
       </div>
 
-      {/* Justification Card */}
-      {scores.justification && (
-        <Card className={`border ${config.borderColor} shadow-sm`}>
-          <CardHeader className={`${config.bgLight} py-3 px-4`}>
-            <CardTitle className="text-sm font-medium">
-              Analysis Justification
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
-            <p className="text-gray-700 text-sm">{scores.justification}</p>
-          </CardContent>
-        </Card>
-      )}
+      {/* Impact Score Card */}
+      <div className={`p-5 rounded-xl bg-gradient-to-br from-white to-${config.color}-50 border ${config.borderColor} shadow-md hover:shadow-lg transition-all duration-300`}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-full ${config.bgLight}`}>
+              <Image
+                src="/impact_score.png"
+                alt="Impact Score"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+            </div>
+            <h3 className={`text-lg font-semibold ${config.textColor} font-heading`}>
+              Impact Score
+            </h3>
+          </div>
+          <div className={`${config.textColor} font-heading`}>
+            <span className="text-xl font-bold">{scores.impact_score}</span>
+            <span className="text-sm font-normal text-gray-500">/100</span>
+          </div>
+        </div>
+        
+        <div className="relative pt-1 pb-2 mt-3">
+          <div className="flex justify-between mb-1 text-xs">
+            <span className="text-gray-500">Low</span>
+            <span className="text-gray-500">High</span>
+          </div>
+          <div className="h-2.5 w-full bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+            <div 
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${scores.impact_score}%`,
+                background: `linear-gradient(to right, var(--${config.color}-600), var(--${config.color}-800))`,
+                boxShadow: `0 0 8px rgba(var(--${config.color}-500-rgb), 0.5)`
+              }}
+            ></div>
+          </div>
+        </div>
+        
+        <p className="mt-3 text-gray-600 text-xs tinos-regular">
+          Reflects potential business impact of identified factors
+        </p>
+      </div>
     </div>
   );
 };
@@ -1185,25 +1236,63 @@ const ReportDisplay = ({
   onBack,
   showReturnButton = true,
 }) => {
-  // Define the font style sheet inside the component
+  // Define the font style sheet inside the component with added CSS variables
   const fontStyleSheet = `
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700,800&family=Sora:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700,800&family=Sora:wght@400;500;600;700&family=Tinos&display=swap');
 
     :root {
       --font-heading: 'Sora', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Tinos', serif;
       --font-special: 'Manrope', sans-serif;
+      
+      /* Color system with RGB values for shadows */
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-800: #1e40af;
+      --blue-500-rgb: 59, 130, 246;
+      
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --green-800: #166534;
+      --green-500-rgb: 34, 197, 94;
+      
+      --pink-500: #ec4899;
+      --pink-600: #db2777;
+      --pink-800: #9d174d;
+      --pink-500-rgb: 236, 72, 153;
+      
+      --cyan-500: #06b6d4;
+      --cyan-600: #0891b2;
+      --cyan-800: #155e75;
+      --cyan-500-rgb: 6, 182, 212;
+      
+      --teal-500: #14b8a6;
+      --teal-600: #0d9488;
+      --teal-800: #115e59;
+      --teal-500-rgb: 20, 184, 166;
+      
+      --amber-500: #f59e0b;
+      --amber-600: #d97706;
+      --amber-800: #92400e;
+      --amber-500-rgb: 245, 158, 11;
+      
+      --indigo-500: #6366f1;
+      --indigo-600: #4f46e5;
+      --indigo-800: #3730a3;
+      --indigo-500-rgb: 99, 102, 241;
     }
 
+    /* Rest of your CSS... */
     h1, h2, h3, h4, h5, h6, .font-heading {
       font-family: var(--font-heading);
       letter-spacing: -0.02em;
       font-weight: 600;
     }
 
-    body, p, ul, ol, li, .font-body {
-      font-family: var(--font-body);
-      letter-spacing: -0.01em;
+    body, p, ul, ol, li, .font-body, .tinos-regular {
+      font-family: 'Tinos', serif;
+      font-weight: 400;
+      font-style: normal;
     }
 
     .card-title, .tab-title, .badge-text, .font-special {
@@ -1430,6 +1519,21 @@ const ReportDisplay = ({
       );
     }
 
+    // Debug logging to check data structure
+    console.log("Final Report Structure:", finalReport);
+    console.log("PESTEL Analysis Structure:", finalReport.pestel_analysis);
+
+    // Extract strategic implications with fallback options
+    const strategicImplications =
+      finalReport.pestel_analysis?.strategic_implications ||
+      finalReport.strategic_implications ||
+      [];
+
+    // Extract opportunities threats matrix with fallback options
+    const opportunitiesThreatsMatrix =
+      finalReport.pestel_analysis?.opportunities_threats_matrix ||
+      finalReport.opportunities_threats_matrix;
+
     return (
       <div className="space-y-6">
         {/* Executive Summary */}
@@ -1515,16 +1619,16 @@ const ReportDisplay = ({
         )}
 
         {/* Strategic Implications */}
-        {finalReport.pestel_analysis?.strategic_implications && (
+        {Array.isArray(strategicImplications) && strategicImplications.length > 0 && (
           <StrategicImplicationsSection
-            implications={finalReport.pestel_analysis.strategic_implications}
+            implications={strategicImplications}
           />
         )}
 
         {/* Opportunities & Threats Matrix */}
-        {finalReport.pestel_analysis?.opportunities_threats_matrix && (
+        {opportunitiesThreatsMatrix && (
           <OpportunitiesThreatsMatrixSection
-            matrix={finalReport.pestel_analysis.opportunities_threats_matrix}
+            matrix={opportunitiesThreatsMatrix}
           />
         )}
 
@@ -1557,6 +1661,21 @@ const ReportDisplay = ({
   const renderUnifiedReport = () => {
     if (!report) return null;
 
+    // Debug logging to check data structure
+    console.log("Unified Report Structure:", report);
+    console.log("PESTEL Analysis Structure:", report.pestel_analysis);
+
+    // Extract strategic implications with fallback options
+    const strategicImplications =
+      report.pestel_analysis?.strategic_implications ||
+      report.strategic_implications ||
+      [];
+
+    // Extract opportunities threats matrix with fallback options
+    const opportunitiesThreatsMatrix =
+      report.pestel_analysis?.opportunities_threats_matrix ||
+      report.opportunities_threats_matrix;
+
     return (
       <div className="space-y-6">
         {/* PESTEL Score Summary - Show all scores in a grid */}
@@ -1587,42 +1706,56 @@ const ReportDisplay = ({
                       className={`border ${dimConfig.borderColor} shadow-sm`}
                     >
                       <CardHeader className={`${dimConfig.bgLight} py-3 px-4`}>
-                        <div className="flex items-center gap-2">
-                          {dimConfig.icon}
-                          <CardTitle
-                            className={`text-base ${dimConfig.textColor}`}
-                          >
-                            {dimension}
-                          </CardTitle>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            {dimConfig.icon}
+                            <CardTitle
+                              className={`text-base ${dimConfig.textColor}`}
+                            >
+                              {dimension}
+                            </CardTitle>
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent className="p-4">
                         <div className="space-y-3">
                           <div>
                             <div className="flex justify-between mb-1 text-sm">
-                              <span>Similarity:</span>
-                              <span className="font-semibold">
-                                {scores.similarity_score}%
+                              <span className="text-gray-600">Similarity:</span>
+                              <span className={`font-semibold ${dimConfig.textColor}`}>
+                                <span className="text-lg font-bold">{scores.similarity_score}</span>
+                                <span className="text-xs font-normal text-gray-500">/100</span>
                               </span>
                             </div>
-                            <Progress
-                              value={scores.similarity_score}
-                              className="h-2"
-                              indicatorClassName={`bg-gradient-to-r ${dimConfig.gradientFrom} ${dimConfig.gradientTo}`}
-                            />
+                            <div className="h-2.5 w-full bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+                              <div 
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${scores.similarity_score}%`,
+                                  background: `linear-gradient(to right, var(--${dimConfig.color}-600), var(--${dimConfig.color}-800))`,
+                                  boxShadow: `0 0 8px rgba(var(--${dimConfig.color}-500-rgb), 0.5)`
+                                }}
+                              ></div>
+                            </div>
                           </div>
                           <div>
                             <div className="flex justify-between mb-1 text-sm">
-                              <span>Impact:</span>
-                              <span className="font-semibold">
-                                {scores.impact_score}%
+                              <span className="text-gray-600">Impact:</span>
+                              <span className={`font-semibold ${dimConfig.textColor}`}>
+                                <span className="text-lg font-bold">{scores.impact_score}</span>
+                                <span className="text-xs font-normal text-gray-500">/100</span>
                               </span>
                             </div>
-                            <Progress
-                              value={scores.impact_score}
-                              className="h-2"
-                              indicatorClassName={`bg-gradient-to-r ${dimConfig.gradientFrom} ${dimConfig.gradientTo}`}
-                            />
+                            <div className="h-2.5 w-full bg-gray-200 rounded-full border border-gray-300 overflow-hidden">
+                              <div 
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${scores.impact_score}%`,
+                                  background: `linear-gradient(to right, var(--${dimConfig.color}-600), var(--${dimConfig.color}-800))`,
+                                  boxShadow: `0 0 8px rgba(var(--${dimConfig.color}-500-rgb), 0.5)`
+                                }}
+                              ></div>
+                            </div>
                           </div>
                         </div>
                       </CardContent>
@@ -1717,48 +1850,16 @@ const ReportDisplay = ({
         )}
 
         {/* Strategic Implications */}
-        {report.pestel_analysis?.strategic_implications && (
+        {Array.isArray(strategicImplications) && strategicImplications.length > 0 && (
           <StrategicImplicationsSection
-            implications={report.pestel_analysis.strategic_implications}
+            implications={strategicImplications}
           />
         )}
 
         {/* Opportunities & Threats Matrix */}
-        {report.pestel_analysis?.opportunities_threats_matrix && (
+        {opportunitiesThreatsMatrix && (
           <OpportunitiesThreatsMatrixSection
-            matrix={report.pestel_analysis.opportunities_threats_matrix}
-          />
-        )}
-
-        {/* Factors Analysis - common type */}
-        {report.factors_analysis && (
-          <FactorsAnalysisSection
-            factors={report.factors_analysis}
-            dimension="Final"
-          />
-        )}
-
-        {/* Risks & Opportunities */}
-        {report.risks_opportunities && (
-          <RisksOpportunitiesSection
-            data={report.risks_opportunities}
-            dimension="Final"
-          />
-        )}
-
-        {/* Regional Dynamics */}
-        {report.regional_dynamics && (
-          <RegionalDynamicsSection
-            regions={report.regional_dynamics}
-            dimension="Final"
-          />
-        )}
-
-        {/* Scenario Analysis */}
-        {report.scenario_analysis && (
-          <ScenarioAnalysisSection
-            scenarios={report.scenario_analysis}
-            dimension="Final"
+            matrix={opportunitiesThreatsMatrix}
           />
         )}
 

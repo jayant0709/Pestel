@@ -690,7 +690,7 @@ const Form = () => {
                 <span className="ml-2">Processing...</span>
               </div>
             ) : (
-              "Submit Analysis"
+              "Submit"
             )}
           </Button>
         </CardFooter>

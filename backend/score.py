@@ -132,13 +132,13 @@ def calculate_scores_direct(form_data, reports):
             ...
         }
     """
-    print(f"[INFO] Starting direct PESTEL scoring calculation...")
+    # print(f"[INFO] Starting direct PESTEL scoring calculation...")
     
     # Prepare dictionary for scores
     scores = {}
 
     for factor in PESTEL_FACTORS:
-        print(f"[INFO] Processing {factor} factor...")
+        # print(f"[INFO] Processing {factor} factor...")
 
         # Extract user subfactor data
         user_factor_key = f"{factor}_factors"
@@ -165,25 +165,25 @@ def calculate_scores_direct(form_data, reports):
             print(f"[WARNING] No report content found for {factor}")
             continue
 
-        print(f"[DEBUG] User factors for {factor}: {user_factor_data}")
-        print(f"[DEBUG] Report length for {factor}: {len(report_text)} characters")
+        # print(f"[DEBUG] User factors for {factor}: {user_factor_data}")
+        # print(f"[DEBUG] Report length for {factor}: {len(report_text)} characters")
 
         # Build the prompt
         prompt = build_prompt(factor, user_factor_data, report_text)
 
         # Call OpenAI GPT-4
         try:
-            start_time = time.time()
+            # start_time = time.time()
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model="o4-mini",
                 messages=[
                     {"role": "system", "content": "You are an expert in PESTEL analysis and scoring."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.2
+                reasoning_effort="medium",
             )
-            duration = time.time() - start_time
-            print(f"[INFO] OpenAI API call for {factor} completed in {duration:.2f}s")
+            # duration = time.time() - start_time
+            # print(f"[INFO] OpenAI API call for {factor} completed in {duration:.2f}s")
         except Exception as e:
             print(f"[ERROR] OpenAI API call failed for {factor}: {e}")
             continue
